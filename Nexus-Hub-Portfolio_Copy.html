@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Hub - React & React Native Developer</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#3b82f6',secondary:'#10b981'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-white">
+    <!-- Header -->
+    <header class="fixed w-full bg-gray-900 text-white z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-['Pacifico'] text-primary">Nexus Hub</a>
+            
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#home" class="hover:text-primary transition-colors">Home</a>
+                <a href="#about" class="hover:text-primary transition-colors">About</a>
+                <a href="#services" class="hover:text-primary transition-colors">Services</a>
+                <a href="#portfolio" class="hover:text-primary transition-colors">Portfolio</a>
+                <a href="#blog" class="hover:text-primary transition-colors">Blog</a>
+                <a href="#contact" class="hover:text-primary transition-colors">Contact</a>
+            </nav>
+            
+            <button class="bg-primary text-white px-6 py-2 !rounded-button whitespace-nowrap hidden md:block hover:bg-blue-600 transition-colors">Hire Me</button>
+            
+            <button class="md:hidden w-10 h-10 flex items-center justify-center" id="mobile-menu-button">
+                <i class="ri-menu-line ri-lg"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden bg-gray-800 md:hidden">
+            <div class="container mx-auto px-4 py-3 flex flex-col space-y-3">
+                <a href="#home" class="py-2 hover:text-primary transition-colors">Home</a>
+                <a href="#about" class="py-2 hover:text-primary transition-colors">About</a>
+                <a href="#services" class="py-2 hover:text-primary transition-colors">Services</a>
+                <a href="#portfolio" class="py-2 hover:text-primary transition-colors">Portfolio</a>
+                <a href="#blog" class="py-2 hover:text-primary transition-colors">Blog</a>
+                <a href="#contact" class="py-2 hover:text-primary transition-colors">Contact</a>
+                <button class="bg-primary text-white px-6 py-2 !rounded-button whitespace-nowrap hover:bg-blue-600 transition-colors self-start">Hire Me</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-gradient text-white min-h-screen flex items-center pt-16">
+        <div class="container mx-auto px-4 py-16 flex flex-col md:flex-row items-center">
+            <div class="w-full md:w-1/2 mb-10 md:mb-0">
+                <p class="text-xl mb-2">Hello, I'm</p>
+                <h1 class="text-5xl md:text-6xl font-bold mb-4">Nnamani .I. Peter</h1>
+                <h2 class="text-2xl md:text-3xl text-primary font-medium mb-6">React & React Native Developer</h2>
+                <p class="text-lg text-gray-300 mb-8 max-w-xl">Building exceptional digital experiences with clean code and innovative solutions for web and mobile platforms.</p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#portfolio" class="bg-primary text-white px-6 py-3 !rounded-button whitespace-nowrap hover:bg-blue-600 transition-colors">View Portfolio</a>
+                    <a href="#" class="bg-transparent border-2 border-white text-white px-6 py-3 !rounded-button whitespace-nowrap hover:bg-white hover:text-gray-900 transition-colors">Download CV</a>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 flex justify-center">
+                <div class="relative w-80 h-80 md:w-96 md:h-96 rounded-full overflow-hidden border-4 border-primary">
+                   <img src="WhatsApp Image 2025-03-31 at 10.58.41_bad45841.jpg" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">About Me</h2>
+                <div class="w-20 h-1 bg-primary mx-auto"></div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-12">
+                <div class="w-full md:w-1/2">
+                    <h3 class="text-2xl font-semibold mb-6">My Journey</h3>
+                    <p class="text-gray-700 mb-6">I am a passionate React and React Native developer with over 4 years of experience building robust and scalable applications. My journey in software development began with a deep curiosity about how digital products work and how they can solve real-world problems.</p>
+                    <p class="text-gray-700 mb-6">I specialize in creating responsive web applications and cross-platform mobile apps that deliver exceptional user experiences. My approach combines technical expertise with a keen eye for design and usability.</p>
+                    <p class="text-gray-700 mb-8">When I'm not coding, I enjoy contributing to open-source projects, writing technical articles, and mentoring aspiring developers. I believe in continuous learning and staying updated with the latest trends and technologies in the ever-evolving tech landscape.</p>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <p class="font-medium">Name:</p>
+                            <p class="text-gray-700">Nnamani .I. Peter</p>
+                        </div>
+                        <div>
+                            <p class="font-medium">Email:</p>
+                            <p class="text-gray-700">peternnamani001@gmail.com</p>
+                        </div>
+                        <div>
+                            <p class="font-medium">From:</p>
+                            <p class="text-gray-700">Enugu State, Nigeria</p>
+                        </div>
+                        <div>
+                            <p class="font-medium">Availability:</p>
+                            <p class="text-primary font-medium">Available for hire</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="w-full md:w-1/2">
+                    <h3 class="text-2xl font-semibold mb-6">My Skills</h3>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">React.js</span>
+                                <span>90%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-primary" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">React Native</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-primary" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">JavaScript</span>
+                                <span>95%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-primary" style="width: 95%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">HTML/CSS</span>
+                                <span>90%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-primary" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">Node.js</span>
+                                <span>80%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-primary" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-10">
+                        <h3 class="text-2xl font-semibold mb-6">Education & Certifications</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="border-l-4 border-primary pl-4">
+                                <h4 class="text-lg font-medium">BSc in Computer Science</h4>
+                                <p class="text-gray-600">National Open University of Nigeria (NOUN), 2020-2024</p>
+                            </div>
+                            
+                            <div class="border-l-4 border-primary pl-4">
+                                <h4 class="text-lg font-medium">Meta React Developer Certification</h4>
+                                <p class="text-gray-600">Meta, 2024</p>
+                            </div>
+                            
+                            <div class="border-l-4 border-primary pl-4">
+                                <h4 class="text-lg font-medium">AWS Certified Developer</h4>
+                                <p class="text-gray-600">Amazon Web Services, 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">My Services</h2>
+                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+                <p class="text-gray-700 max-w-2xl mx-auto">I offer comprehensive development solutions tailored to meet your unique requirements and business goals.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 flex items-center justify-center bg-blue-100 text-primary rounded-lg mb-6">
+                        <i class="ri-code-s-slash-line ri-2x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">Web Development</h3>
+                    <p class="text-gray-700 mb-6">Building responsive, high-performance web applications using React.js and modern frontend technologies. I create seamless user experiences with clean, maintainable code.</p>
+                    <ul class="text-gray-700 space-y-2">
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary mt-1 mr-2"></i>
+                            <span>Single Page Applications (SPAs)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary mt-1 mr-2"></i>
+                            <span>Progressive Web Apps (PWAs)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary mt-1 mr-2"></i>
+                            <span>Frontend Architecture</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary mt-1 mr-2"></i>
+                            <span>Performance Optimization</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 flex items-center justify-center bg-blue-100 text-primary rounded-lg mb-6">
+                        <i class="ri-smartphone-line ri-2x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">Mobile App Development</h3>
+                    <p class="text-gray-700 mb-6">Crafting cross-platform mobile applications with React Native that deliver native-like experiences while maintaining a single codebase for iOS and Android.</p>
+                    <ul class="text-gray-700 space-y-2">
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary mt-1 mr-2"></i>
+                            <span>iOS & Android Apps</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary mt-1 mr-2"></i>
+                            <span>Custom UI Components</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary mt-1 mr-2"></i>
+                            <span>Native Module Integration</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary mt-1 mr-2"></i>
+                            <span>App Store Deployment</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 flex items-center justify-center bg-blue-100 text-primary rounded-lg mb-6">
+                        <i class="ri-layout-2-line ri-2x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">UI/UX Consultancy</h3>
+                    <p class="text-gray-700 mb-6">Providing expert guidance on user interface design and user experience strategies to create intuitive, engaging, and accessible digital products.</p>
+                    <ul class="text-gray-700 space-y-2">
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary mt-1 mr-2"></i>
+                            <span>User Flow Optimization</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary mt-1 mr-2"></i>
+                            <span>Interface Audits</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary mt-1 mr-2"></i>
+                            <span>Accessibility Compliance</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary mt-1 mr-2"></i>
+                            <span>Design System Implementation</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="py-16 bg-gray-900 text-white">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-4xl font-bold text-primary mb-2 counter-value" data-target="63">0</div>
+                    <p class="text-lg">Projects Completed</p>
+                </div>
+                
+                <div>
+                    <div class="text-4xl font-bold text-primary mb-2 counter-value" data-target="85">0</div>
+                    <p class="text-lg">Happy Clients</p>
+                </div>
+                
+                <div>
+                    <div class="text-4xl font-bold text-primary mb-2 counter-value" data-target="350000">0</div>
+                    <p class="text-lg">Lines of Code</p>
+                </div>
+                
+                <div>
+                    <div class="text-4xl font-bold text-primary mb-2 counter-value" data-target="4">0</div>
+                    <p class="text-lg">Years of Experience</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">My Portfolio</h2>
+                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+                <p class="text-gray-700 max-w-2xl mx-auto">Explore my recent projects showcasing my expertise in React and React Native development.</p>
+            </div>
+            
+            <div class="flex justify-center mb-10">
+                <div class="inline-flex bg-gray-100 p-1 rounded-full">
+                    <button class="portfolio-filter px-6 py-2 rounded-full bg-primary text-white whitespace-nowrap" data-filter="all">All</button>
+                    <button class="portfolio-filter px-6 py-2 rounded-full text-gray-700 whitespace-nowrap" data-filter="web">Web Apps</button>
+                    <button class="portfolio-filter px-6 py-2 rounded-full text-gray-700 whitespace-nowrap" data-filter="mobile">Mobile Apps</button>
+                    <button class="portfolio-filter px-6 py-2 rounded-full text-gray-700 whitespace-nowrap" data-filter="ui">UI/UX</button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="portfolio-item rounded-lg overflow-hidden shadow-lg" data-category="web">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=modern%2520e-commerce%2520website%2520interface%2520with%2520clean%2520design%2520showing%2520product%2520grid%2520layout%2520with%2520clothing%2520items%2520on%2520white%2520background%2520professional%2520web%2520design%2520with%2520clear%2520navigation%2520and%2520shopping%2520cart%2520icon&width=600&height=400&seq=2&orientation=landscape" alt="E-commerce Platform" class="w-full h-full object-cover object-top">
+                        <div class="absolute inset-0 bg-primary bg-opacity-80 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                            <button class="bg-white text-primary px-6 py-2 rounded-full font-medium hover:bg-gray-100 transition-colors" onclick="openModal('project1')">View Project</button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">FashionHub E-commerce</h3>
+                        <p class="text-gray-600 mb-4">A full-featured React e-commerce platform with product filtering, cart management, and payment integration.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">React</span>
+                            <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">Redux</span>
+                            <span class="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full">Stripe</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item rounded-lg overflow-hidden shadow-lg" data-category="mobile">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=fitness%2520mobile%2520app%2520interface%2520showing%2520workout%2520tracking%2520screen%2520with%2520exercise%2520statistics%2520and%2520progress%2520charts%2520clean%2520modern%2520UI%2520design%2520with%2520blue%2520accent%2520colors%2520on%2520dark%2520background&width=600&height=400&seq=3&orientation=landscape" alt="Fitness App" class="w-full h-full object-cover object-top">
+                        <div class="absolute inset-0 bg-primary bg-opacity-80 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                            <button class="bg-white text-primary px-6 py-2 rounded-full font-medium hover:bg-gray-100 transition-colors" onclick="openModal('project2')">View Project</button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">FitTrack Mobile App</h3>
+                        <p class="text-gray-600 mb-4">A React Native fitness tracking application with workout plans, progress tracking, and social features.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">React Native</span>
+                            <span class="bg-yellow-100 text-yellow-800 text-xs px-3 py-1 rounded-full">Firebase</span>
+                            <span class="bg-red-100 text-red-800 text-xs px-3 py-1 rounded-full">GraphQL</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item rounded-lg overflow-hidden shadow-lg" data-category="ui">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=banking%2520dashboard%2520interface%2520with%2520financial%2520analytics%2520charts%2520account%2520balance%2520information%2520and%2520transaction%2520history%2520clean%2520professional%2520UI%2520design%2520with%2520data%2520visualization%2520elements%2520light%2520theme&width=600&height=400&seq=4&orientation=landscape" alt="Banking Dashboard" class="w-full h-full object-cover object-top">
+                        <div class="absolute inset-0 bg-primary bg-opacity-80 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                            <button class="bg-white text-primary px-6 py-2 rounded-full font-medium hover:bg-gray-100 transition-colors" onclick="openModal('project3')">View Project</button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">FinTech Dashboard</h3>
+                        <p class="text-gray-600 mb-4">A comprehensive financial dashboard with data visualization, account management, and transaction tracking.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">React</span>
+                            <span class="bg-indigo-100 text-indigo-800 text-xs px-3 py-1 rounded-full">D3.js</span>
+                            <span class="bg-teal-100 text-teal-800 text-xs px-3 py-1 rounded-full">Material UI</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item rounded-lg overflow-hidden shadow-lg" data-category="web">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=real%2520estate%2520property%2520listing%2520website%2520interface%2520showing%2520property%2520cards%2520with%2520images%2520and%2520details%2520search%2520filters%2520and%2520map%2520integration%2520clean%2520modern%2520web%2520design%2520with%2520white%2520background%2520and%2520blue%2520accents&width=600&height=400&seq=5&orientation=landscape" alt="Real Estate Platform" class="w-full h-full object-cover object-top">
+                        <div class="absolute inset-0 bg-primary bg-opacity-80 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                            <button class="bg-white text-primary px-6 py-2 rounded-full font-medium hover:bg-gray-100 transition-colors" onclick="openModal('project4')">View Project</button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">PropertyFinder Portal</h3>
+                        <p class="text-gray-600 mb-4">A real estate platform with property listings, advanced search filters, and interactive map integration.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">React</span>
+                            <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">Node.js</span>
+                            <span class="bg-yellow-100 text-yellow-800 text-xs px-3 py-1 rounded-full">Google Maps API</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item rounded-lg overflow-hidden shadow-lg" data-category="mobile">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=food%2520delivery%2520mobile%2520app%2520interface%2520showing%2520restaurant%2520listings%2520with%2520food%2520images%2520menu%2520items%2520and%2520ordering%2520process%2520clean%2520modern%2520UI%2520design%2520with%2520orange%2520accent%2520colors%2520on%2520white%2520background&width=600&height=400&seq=6&orientation=landscape" alt="Food Delivery App" class="w-full h-full object-cover object-top">
+                        <div class="absolute inset-0 bg-primary bg-opacity-80 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                            <button class="bg-white text-primary px-6 py-2 rounded-full font-medium hover:bg-gray-100 transition-colors" onclick="openModal('project5')">View Project</button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">QuickBite Delivery App</h3>
+                        <p class="text-gray-600 mb-4">A food delivery application with restaurant browsing, order tracking, and payment processing.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">React Native</span>
+                            <span class="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full">Redux Toolkit</span>
+                            <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">Stripe</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item rounded-lg overflow-hidden shadow-lg" data-category="ui">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=project%2520management%2520dashboard%2520interface%2520showing%2520task%2520boards%2520project%2520timelines%2520and%2520team%2520collaboration%2520features%2520clean%2520modern%2520UI%2520design%2520with%2520data%2520visualization%2520elements%2520light%2520theme%2520with%2520blue%2520accents&width=600&height=400&seq=7&orientation=landscape" alt="Project Management Tool" class="w-full h-full object-cover object-top">
+                        <div class="absolute inset-0 bg-primary bg-opacity-80 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                            <button class="bg-white text-primary px-6 py-2 rounded-full font-medium hover:bg-gray-100 transition-colors" onclick="openModal('project6')">View Project</button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">TaskFlow Management</h3>
+                        <p class="text-gray-600 mb-4">A project management tool with task boards, time tracking, and team collaboration features.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">React</span>
+                            <span class="bg-red-100 text-red-800 text-xs px-3 py-1 rounded-full">Socket.io</span>
+                            <span class="bg-indigo-100 text-indigo-800 text-xs px-3 py-1 rounded-full">MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="#" class="bg-primary text-white px-8 py-3 !rounded-button whitespace-nowrap hover:bg-blue-600 transition-colors inline-block">View All Projects</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section id="blog" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Latest Articles</h2>
+                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+                <p class="text-gray-700 max-w-2xl mx-auto">Insights and tutorials on React, React Native, and modern web development practices.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=modern%2520code%2520editor%2520with%2520React%2520JavaScript%2520code%2520on%2520screen%2520clean%2520development%2520environment%2520with%2520syntax%2520highlighting%2520professional%2520programming%2520setup%2520with%2520dark%2520theme%2520and%2520multiple%2520panels&width=600&height=300&seq=8&orientation=landscape" alt="React Performance Optimization" class="w-full h-full object-cover object-top">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center text-gray-500 text-sm mb-3">
+                            <span class="flex items-center mr-4">
+                                <i class="ri-calendar-line mr-1"></i>
+                                <span>May 2, 2025</span>
+                            </span>
+                            <span class="flex items-center">
+                                <i class="ri-time-line mr-1"></i>
+                                <span>5 min read</span>
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Advanced React Performance Optimization Techniques</h3>
+                        <p class="text-gray-700 mb-4">Learn how to identify and fix performance bottlenecks in your React applications using profiling tools and optimization strategies.</p>
+                        <a href="#" class="text-primary font-medium hover:underline flex items-center">
+                            Read More
+                            <i class="ri-arrow-right-line ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=mobile%2520app%2520development%2520workspace%2520with%2520smartphone%2520displaying%2520app%2520interface%2520next%2520to%2520laptop%2520with%2520React%2520Native%2520code%2520modern%2520clean%2520development%2520environment%2520with%2520coffee%2520cup%2520professional%2520setup&width=600&height=300&seq=9&orientation=landscape" alt="React Native Architecture" class="w-full h-full object-cover object-top">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center text-gray-500 text-sm mb-3">
+                            <span class="flex items-center mr-4">
+                                <i class="ri-calendar-line mr-1"></i>
+                                <span>April 18, 2025</span>
+                            </span>
+                            <span class="flex items-center">
+                                <i class="ri-time-line mr-1"></i>
+                                <span>8 min read</span>
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Building Scalable React Native Architecture</h3>
+                        <p class="text-gray-700 mb-4">Explore best practices for structuring large-scale React Native applications to ensure maintainability and scalability.</p>
+                        <a href="#" class="text-primary font-medium hover:underline flex items-center">
+                            Read More
+                            <i class="ri-arrow-right-line ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=web%2520development%2520workspace%2520showing%2520modern%2520UI%2520components%2520library%2520on%2520screen%2520with%2520design%2520system%2520documentation%2520clean%2520organized%2520interface%2520elements%2520professional%2520frontend%2520development%2520environment%2520light%2520theme&width=600&height=300&seq=10&orientation=landscape" alt="Component Library" class="w-full h-full object-cover object-top">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center text-gray-500 text-sm mb-3">
+                            <span class="flex items-center mr-4">
+                                <i class="ri-calendar-line mr-1"></i>
+                                <span>March 25, 2025</span>
+                            </span>
+                            <span class="flex items-center">
+                                <i class="ri-time-line mr-1"></i>
+                                <span>6 min read</span>
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Creating a Reusable Component Library with React</h3>
+                        <p class="text-gray-700 mb-4">A step-by-step guide to building, documenting, and maintaining a custom component library for your React projects.</p>
+                        <a href="#" class="text-primary font-medium hover:underline flex items-center">
+                            Read More
+                            <i class="ri-arrow-right-line ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="#" class="bg-primary text-white px-8 py-3 !rounded-button whitespace-nowrap hover:bg-blue-600 transition-colors inline-block">View All Articles</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Get In Touch</h2>
+                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+                <p class="text-gray-700 max-w-2xl mx-auto">Have a project in mind or want to discuss potential opportunities? I'd love to hear from you!</p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-12">
+                <div class="w-full md:w-1/2">
+                    <form class="space-y-6" id="contactForm">
+                        <div>
+                            <label for="name" class="block text-gray-700 font-medium mb-2">Your Name</label>
+                            <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="John Doe">
+                        </div>
+                        
+                        <div>
+                            <label for="email" class="block text-gray-700 font-medium mb-2">Your Email</label>
+                            <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="john@example.com">
+                        </div>
+                        
+                        <div>
+                            <label for="subject" class="block text-gray-700 font-medium mb-2">Subject</label>
+                            <input type="text" id="subject" name="subject" class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Project Inquiry">
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-gray-700 font-medium mb-2">Your Message</label>
+                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Tell me about your project..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="bg-primary text-white px-8 py-3 !rounded-button whitespace-nowrap hover:bg-blue-600 transition-colors">Send Message</button>
+                        <div id="contactFormFeedback" class="mt-2 text-sm"></div>
+                    </form>
+                </div>
+                
+                <div class="w-full md:w-1/2">
+                    <div class="bg-white rounded-lg shadow-lg p-8 h-full">
+                        <h3 class="text-2xl font-semibold mb-6">Contact Information</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 flex items-center justify-center bg-blue-100 text-primary rounded-lg mr-4">
+                                    <i class="ri-mail-line ri-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium mb-1">Email</h4>
+                                    <p class="text-gray-700">peternnamani001@gmail.com</p>
+                                    <p class="text-gray-700">nexuslearningcenter.org@gmail.com</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 flex items-center justify-center bg-blue-100 text-primary rounded-lg mr-4">
+                                    <i class="ri-phone-line ri-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium mb-1">Phone</h4>
+                                    <p class="text-gray-700">+234 816 664 1487</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 flex items-center justify-center bg-blue-100 text-primary rounded-lg mr-4">
+                                    <i class="ri-map-pin-line ri-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium mb-1">Location</h4>
+                                    <p class="text-gray-700">Enugu, Nigeria</p>
+                                    <p class="text-gray-700">Available for remote work worldwide</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-10">
+                            <h4 class="text-lg font-medium mb-4">Connect With Me</h4>
+                            <div class="flex space-x-4">
+                                <a href="https://github.com/PeterNnamani" class="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-700 rounded-full hover:bg-primary hover:text-white transition-colors">
+                                    <i class="ri-github-fill"></i>
+                                </a>
+                                <a href="https://linkedin.com/in/peter-nnamani" class="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-700 rounded-full hover:bg-primary hover:text-white transition-colors">
+                                    <i class="ri-linkedin-fill"></i>
+                                </a>
+                                <a href="https://x.com/nnamani_pete" class="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-700 rounded-full hover:bg-primary hover:text-white transition-colors">
+                                    <i class="ri-twitter-x-fill"></i>
+                                </a>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div>
+                    <a href="#" class="text-3xl font-['Pacifico'] text-primary mb-6 inline-block">Nexus Hub</a>
+                    <p class="text-gray-400 mb-6">Building exceptional digital experiences with clean code and innovative solutions for web and mobile platforms.</p>
+                    <div class="flex space-x-4">
+                        <a href="https://github.com/PeterNnamani" class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors">
+                            <i class="ri-github-fill"></i>
+                        </a>
+                        <a href="https://linkedin.com/in/peter-nnamani" class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors">
+                            <i class="ri-linkedin-fill"></i>
+                        </a>
+                        <a href="https://x.com/nnamani_pete" class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors">
+                            <i class="ri-twitter-x-fill"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-6">Quick Links</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#home" class="text-gray-400 hover:text-primary transition-colors">Home</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-primary transition-colors">About</a></li>
+                        <li><a href="#services" class="text-gray-400 hover:text-primary transition-colors">Services</a></li>
+                        <li><a href="#portfolio" class="text-gray-400 hover:text-primary transition-colors">Portfolio</a></li>
+                        <li><a href="#blog" class="text-gray-400 hover:text-primary transition-colors">Blog</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-primary transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-6">Newsletter</h3>
+                    <p class="text-gray-400 mb-6">Subscribe to receive updates on my latest projects and articles.</p>
+                    <form class="flex">
+                        <input type="email" placeholder="Your email address" class="w-full px-4 py-3 bg-gray-800 border-none rounded-l focus:outline-none focus:ring-2 focus:ring-primary">
+                        <button type="submit" class="bg-primary text-white px-4 py-3 !rounded-r-button whitespace-nowrap hover:bg-blue-600 transition-colors">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 mb-4 md:mb-0">© 2025 Nexus Hub. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-primary transition-colors">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-primary transition-colors">Terms of Service</a>
+                    <a href="#" class="text-gray-400 hover:text-primary transition-colors">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top w-12 h-12 flex items-center justify-center bg-primary text-white rounded-full shadow-lg" id="backToTop">
+        <i class="ri-arrow-up-line ri-lg"></i>
+    </button>
+
+    <!-- Project Modals -->
+    <div id="projectModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6" id="modalContent">
+                <!-- Modal content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js">
+       
+    </script>
+</body>
+</html>
