@@ -315,8 +315,14 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeModal();
 });
 
-/* Chat Widget */
-const CHAT_EMAIL = 'nexushub.officiel@yahoo.com';
+/* Chat Widget — EmailJS config (dashboard: https://dashboard.emailjs.com) */
+const EMAILJS_CONFIG = {
+    publicKey: 'N3kN7OWGID6l2hxsI',
+    serviceId: 'service_5c7dbcf',
+    templateId: 'template_pi624hk',
+    // Recipient — template "To email" field MUST be {{to_email}} or this exact address
+    toEmail: 'nexushub.officiel@yahoo.com'
+};
 
 function initChatWidget() {
     const widget = document.getElementById('chat-widget');
@@ -341,7 +347,7 @@ function initChatWidget() {
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js';
     script.onload = () => {
-        emailjs.init('N3kN7OWGID6l2hxsI');
+        emailjs.init(EMAILJS_CONFIG.publicKey);
         state.emailjsReady = true;
     };
     document.body.appendChild(script);
@@ -608,11 +614,16 @@ ${state.message}
                 });
             }
 
-            await emailjs.send('service_5c7dbcf', 'template_pi624hk', {
-                to_email: CHAT_EMAIL,
+            const templateParams = {
+                to_email: EMAILJS_CONFIG.toEmail,
+                to_name: 'Nexus Hub Team',
                 from_name: state.name,
                 from_email: state.email,
                 reply_to: state.email,
+                user_email: state.email,
+                user_name: state.name,
+                name: state.name,
+                email: state.email,
                 subject: `[Nexus Hub] ${state.topic} — ${state.name}`,
                 message: plainText,
                 html_message: htmlContent,
@@ -620,14 +631,22 @@ ${state.message}
                 client_name: state.name,
                 client_email: state.email,
                 inquiry_date: now
-            });
+            };
+
+            const response = await emailjs.send(
+                EMAILJS_CONFIG.serviceId,
+                EMAILJS_CONFIG.templateId,
+                templateParams
+            );
+
+            console.log('EmailJS sent:', response.status, response.text);
 
             addMessage('bot', '', {
                 successCard: `
                     <div class="chat-success-card">
                         <div class="chat-success-icon"><i class="ri-check-line"></i></div>
-                        <h5>Message Delivered!</h5>
-                        <p>Your inquiry has been sent to our team at <strong>${CHAT_EMAIL}</strong>. We'll respond within 24 hours.</p>
+                        <h5>Message Sent!</h5>
+                        <p>Your inquiry was submitted to <strong>${EMAILJS_CONFIG.toEmail}</strong>. We'll respond within 24 hours.</p>
                     </div>
                 `
             });
@@ -637,8 +656,10 @@ ${state.message}
             input.disabled = false;
             sendBtn.disabled = false;
             setQuickReplies(['Start New Inquiry']);
-        } catch {
-            await botSay('Sorry, we couldn\'t send your message. Please email us directly at <strong>nexushub.officiel@yahoo.com</strong>.');
+        } catch (err) {
+            const reason = err?.text || err?.message || 'Unknown error';
+            console.error('EmailJS failed:', err);
+            await botSay(`Sorry, delivery failed: <strong>${reason}</strong><br><br>Please email us directly at <a href="mailto:${EMAILJS_CONFIG.toEmail}" style="color:var(--primary)">${EMAILJS_CONFIG.toEmail}</a>`);
             state.step = 'message';
             input.disabled = false;
             sendBtn.disabled = false;
