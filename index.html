@@ -6,7 +6,7 @@
     <title>Nexus Hub Limited | Custom Software, Mobile Apps & Secure Systems</title>
     <meta name="description" content="Nexus Hub Limited pioneers software solutions for the digital age — web development, mobile apps, and secure systems for businesses across Nigeria and beyond.">
     <link rel="icon" id="site-favicon" href="favicon-light.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/nexus-icon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -14,11 +14,17 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <svg class="logo-sprite" aria-hidden="true" focusable="false">
+        <symbol id="nexus-wordmark" viewBox="0 0 388 108">
+            <text x="0" y="86" font-family="'Space Grotesk', system-ui, sans-serif" font-weight="700" font-size="88" letter-spacing="-3" fill="currentColor">nexus</text>
+        </symbol>
+    </svg>
+
     <!-- Page Loader -->
     <div id="page-loader" class="page-loader">
         <div class="loader-content">
             <div class="loader-logo">
-                <span class="logo-mark logo-mark--lg" role="img" aria-label="Nexus Hub"></span>
+                <svg class="logo-mark logo-mark--lg logo-svg" role="img" aria-label="Nexus Hub"><use href="#nexus-wordmark"/></svg>
             </div>
             <p class="loader-text">Loading amazing experiences<span class="loader-dots"></span></p>
             <div class="loader-bar"><div class="loader-bar-fill"></div></div>
@@ -29,7 +35,7 @@
     <header id="site-header" class="site-header">
         <div class="header-inner">
             <a href="#home" class="logo">
-                <span class="logo-mark" role="img" aria-label="nexus"></span>
+                <svg class="logo-mark logo-svg" role="img" aria-label="nexus"><use href="#nexus-wordmark"/></svg>
                 <span class="logo-text">Hub <span class="logo-limited">Limited</span></span>
             </a>
 
@@ -467,7 +473,7 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <a href="#home" class="logo">
-                        <span class="logo-mark" role="img" aria-label="nexus"></span>
+                        <svg class="logo-mark logo-svg" role="img" aria-label="nexus"><use href="#nexus-wordmark"/></svg>
                         <span class="logo-text">Hub <span class="logo-limited">Limited</span></span>
                     </a>
                     <p>Pioneering software solutions for the digital age, empowering businesses to achieve their full potential.</p>
@@ -528,7 +534,7 @@
                 <div class="chat-header">
                     <div class="chat-header-info">
                         <div class="chat-brand-mark">
-                            <span class="logo-mark logo-mark--chat" aria-hidden="true"></span>
+                            <svg class="logo-mark logo-mark--chat logo-svg" aria-hidden="true"><use href="#nexus-wordmark"/></svg>
                             <span class="chat-online"></span>
                         </div>
                         <div>

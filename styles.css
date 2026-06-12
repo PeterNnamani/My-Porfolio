@@ -196,6 +196,13 @@ img {
     justify-content: space-between;
 }
 
+.logo-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
 .logo {
     display: flex;
     align-items: flex-end;
@@ -220,17 +227,8 @@ img {
     width: auto;
     aspect-ratio: 388 / 108;
     color: var(--logo-color);
-    background: none;
-    background-color: var(--logo-color);
-    -webkit-mask-image: url('assets/nexus-mask.svg');
-    mask-image: url('assets/nexus-mask.svg');
-    -webkit-mask-size: contain;
-    mask-size: contain;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-    mask-position: center;
-    transition: color var(--transition), background-color var(--transition), filter var(--transition);
+    fill: currentColor;
+    transition: color var(--transition), fill var(--transition), filter var(--transition);
 }
 
 [data-theme="dark"] .logo-mark,

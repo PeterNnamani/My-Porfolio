@@ -1,8 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="62 208 388 108">
-  <defs>
-    <mask id="m">
-      <image xlink:href="assets/logo.png" width="512" height="512" x="0" y="0"/>
-    </mask>
-  </defs>
-  <rect x="0" y="0" width="512" height="512" fill="#0a0f1e" mask="url(#m)"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="8" fill="#ffffff"/>
+  <circle cx="24" cy="8" r="3.5" fill="#3b82f6"/>
+  <path d="M7 24V10h2.8l6.2 6.2V10H19v14h-2.8l-6.2-6.2V24H7z" fill="#0a0f1e"/>
 </svg>
