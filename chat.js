@@ -66,8 +66,18 @@ function initChatWidget() {
     }
 
     function initSupabase() {
-        if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) return null;
-        return window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+        try {
+            if (!cfg.supabaseUrl || !cfg.supabaseAnonKey) return null;
+            const lib = window.supabase;
+            if (!lib?.createClient) {
+                console.warn('Supabase library not loaded — using local storage fallback');
+                return null;
+            }
+            return lib.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+        } catch (e) {
+            console.error('Supabase init failed:', e);
+            return null;
+        }
     }
 
     function convRef(id) {
@@ -386,7 +396,6 @@ function initChatWidget() {
         if (!value || !state.onboarding) return;
 
         appendMessageEl('user', escapeHtml(value), new Date().toISOString());
-        input.value = '';
 
         const ob = state.onboarding;
 
@@ -426,24 +435,52 @@ function initChatWidget() {
                 await loadConversationList();
                 await openConversation(conv.id);
             } catch (e) {
-                console.error(e);
-                appendMessageEl('bot', 'Could not start conversation. Please try again.', new Date().toISOString());
+                console.error('Create conversation failed:', e);
+                const errMsg = e?.message || e?.details || 'Unknown error';
+                appendMessageEl('bot', `Could not start conversation: <strong>${escapeHtml(String(errMsg))}</strong>. Check Supabase tables are created.`, new Date().toISOString());
                 ob.step = 'message';
                 input.disabled = false;
                 sendBtn.disabled = false;
+                throw e;
             }
         }
     }
 
     async function sendThreadMessage() {
         const text = input.value.trim();
-        if (!text || !state.activeConversationId) return;
+        if (!text) return;
+
+        // Onboarding: no conversation id yet — must run before activeConversationId check
+        if (state.onboarding) {
+            input.value = '';
+            sendBtn.disabled = true;
+            try {
+                await handleOnboardingInput(text);
+            } catch (e) {
+                console.error('Onboarding send failed:', e);
+                appendMessageEl('bot', 'Something went wrong. Please try again.', new Date().toISOString());
+                if (state.onboarding) state.onboarding.step = state.onboarding.step === 'creating' ? 'message' : state.onboarding.step;
+            } finally {
+                sendBtn.disabled = state.onboarding?.step === 'creating';
+                input.disabled = state.onboarding?.step === 'creating';
+                if (!input.disabled) input.focus();
+            }
+            return;
+        }
+
+        if (!state.activeConversationId) {
+            showView('thread');
+            startOnboarding();
+            return;
+        }
 
         const conv = state.conversations.find(c => c.id === state.activeConversationId);
-        if (!conv || conv.status === 'closed') return;
-
-        if (state.onboarding) {
-            handleOnboardingInput(text);
+        if (!conv) {
+            appendMessageEl('bot', 'Conversation not found. Please go back and select a chat.', new Date().toISOString());
+            return;
+        }
+        if (conv.status === 'closed') {
+            appendMessageEl('bot', 'This conversation is resolved. Start a <strong>new chat</strong> from the list.', new Date().toISOString());
             return;
         }
 
@@ -452,13 +489,18 @@ function initChatWidget() {
         sendBtn.disabled = true;
 
         try {
-            await insertMessage(conv.id, 'user', text);
-            state.messages.push({ sender: 'user', content: text, created_at: new Date().toISOString() });
+            const saved = await insertMessage(conv.id, 'user', text);
+            state.messages.push(saved || { sender: 'user', content: text, created_at: new Date().toISOString() });
             appendMessageEl('user', escapeHtml(text), new Date().toISOString());
-            await notifyAdminByEmail(conv, text);
+            try {
+                await notifyAdminByEmail(conv, text);
+            } catch (emailErr) {
+                console.warn('Email notify failed (message still saved):', emailErr);
+            }
         } catch (e) {
-            console.error(e);
-            appendMessageEl('bot', 'Failed to send. Please try again.', new Date().toISOString());
+            console.error('Send failed:', e);
+            input.value = text;
+            appendMessageEl('bot', `Failed to send: ${e.message || 'Please try again.'}`, new Date().toISOString());
         }
 
         input.disabled = false;
@@ -622,8 +664,18 @@ To reply by email and sync to chat, use subject:
     });
     document.getElementById('chat-new-btn').addEventListener('click', startOnboarding);
     document.getElementById('chat-resolve-btn').addEventListener('click', closeConversation);
-    sendBtn.addEventListener('click', sendThreadMessage);
-    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendThreadMessage(); });
+    sendBtn.type = 'button';
+    sendBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        sendThreadMessage();
+    });
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendThreadMessage();
+        }
+    });
 
     document.querySelectorAll('.open-chat').forEach(el => {
         el.addEventListener('click', (e) => { e.preventDefault(); openChat(); });
