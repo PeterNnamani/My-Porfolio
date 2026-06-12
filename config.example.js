@@ -16,11 +16,15 @@ window.NEXUS_CONFIG = {
     // Admin panel password (admin.html only — do not share publicly)
     adminPassword: 'change-this-password',
 
-    // EmailJS (same as before)
+    // EmailJS — https://dashboard.emailjs.com
+    // Template "To email" MUST be {{to_email}} (not a hardcoded address).
+    // Account → Security → add your live domain (e.g. nexushublimited.com).
     emailjs: {
-        publicKey: 'N3kN7OWGID6l2hxsI',
-        serviceId: 'service_5c7dbcf',
-        templateId: 'template_pi624hk',
+        publicKey: 'YOUR_PUBLIC_KEY',
+        serviceId: 'YOUR_SERVICE_ID',
+        templateId: 'YOUR_ADMIN_TEMPLATE_ID',
+        adminTemplateId: 'YOUR_ADMIN_TEMPLATE_ID',  // optional; falls back to templateId
+        visitorTemplateId: 'YOUR_VISITOR_TEMPLATE_ID', // optional; for admin replies to visitors
         toEmail: 'nexushub.officiel@yahoo.com'
     },
 

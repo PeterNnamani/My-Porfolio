@@ -517,8 +517,13 @@ function initChatWidget() {
                 const conv = await createConversation(ob.name, ob.email, ob.topic);
                 await insertMessage(conv.id, 'bot', 'Conversation started. Our team will reply here and via email.');
                 await insertMessage(conv.id, 'user', value);
-                await notifyAdminByEmail(conv, value);
-                appendMessageEl('bot', '✓ Message delivered to our team. We\'ll reply here in the chat.', new Date().toISOString());
+                try {
+                    await notifyAdminByEmail(conv, value);
+                    appendMessageEl('bot', '✓ Message delivered to our team. We\'ll reply here in the chat.', new Date().toISOString());
+                } catch (emailErr) {
+                    console.warn('Email notify failed (conversation still created):', emailErr);
+                    appendMessageEl('bot', `✓ Chat saved. Email alert failed (${escapeHtml(formatError(emailErr))}) — check EmailJS dashboard.`, new Date().toISOString());
+                }
                 state.onboarding = null;
                 onboardingEl.classList.add('hidden');
                 threadActions.classList.remove('hidden');

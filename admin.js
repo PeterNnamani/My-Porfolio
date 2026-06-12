@@ -211,7 +211,8 @@
                 }
             } catch (e) {
                 console.warn('Visitor email failed:', e);
-                emailStatus = ' (visitor email failed — chat reply saved)';
+                const detail = e?.message || String(e);
+                emailStatus = ` (visitor email failed: ${detail})`;
             }
         }
 

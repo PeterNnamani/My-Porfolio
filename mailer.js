@@ -5,6 +5,18 @@ window.NexusMailer = (function () {
 
     let readyPromise = null;
 
+    function formatEmailJsError(err) {
+        if (!err) return 'Unknown EmailJS error';
+        if (typeof err === 'string') return err;
+        const parts = [err.text, err.message, err.status && `HTTP ${err.status}`].filter(Boolean);
+        if (parts.length) return parts.join(' — ');
+        try {
+            return JSON.stringify(err);
+        } catch {
+            return String(err);
+        }
+    }
+
     function init() {
         if (readyPromise) return readyPromise;
 
@@ -14,13 +26,17 @@ window.NexusMailer = (function () {
                 reject(new Error('EmailJS public key missing in config.js'));
                 return;
             }
+            if (!ej.serviceId || !ej.templateId) {
+                reject(new Error('EmailJS serviceId or templateId missing in config.js'));
+                return;
+            }
 
             const start = () => {
                 try {
-                    emailjs.init(ej.publicKey);
+                    emailjs.init({ publicKey: ej.publicKey });
                     resolve();
                 } catch (e) {
-                    reject(e);
+                    reject(new Error(formatEmailJsError(e)));
                 }
             };
 
@@ -30,7 +46,7 @@ window.NexusMailer = (function () {
             }
 
             const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js';
+            script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
             script.onload = start;
             script.onerror = () => reject(new Error('Failed to load EmailJS script'));
             document.head.appendChild(script);
@@ -78,11 +94,19 @@ window.NexusMailer = (function () {
         return true;
     }
 
-    async function send(params) {
+    async function send(templateId, params) {
         await init();
         const ej = emailjsCfg();
-        const response = await emailjs.send(ej.serviceId, ej.templateId, params);
-        return response;
+        const id = templateId || ej.templateId;
+        try {
+            const response = await emailjs.send(ej.serviceId, id, params, { publicKey: ej.publicKey });
+            if (response?.status && response.status !== 200) {
+                throw new Error(response.text || `EmailJS returned status ${response.status}`);
+            }
+            return response;
+        } catch (err) {
+            throw new Error(formatEmailJsError(err));
+        }
     }
 
     async function notifyAdmin(conv, messageText) {
@@ -123,12 +147,13 @@ Do NOT use Yahoo/Gmail Reply — use the link above so your reply shows in the c
 
         const visitorEmail = normalizeEmail(conv.visitor_email);
 
-        return send({
+        return send(ej.adminTemplateId || ej.templateId, {
             to_email: ej.toEmail,
+            user_email: ej.toEmail,
             to_name: 'Nexus Hub Team',
             from_name: 'Nexus Hub Website',
             from_email: ej.toEmail,
-            reply_to: ej.toEmail,
+            reply_to: visitorEmail || ej.toEmail,
             name: conv.visitor_name,
             // Use admin inbox for "email" so templates with {{email}} as To still deliver here
             email: ej.toEmail,
@@ -179,8 +204,9 @@ Reference: ${ref}`;
   </div>
 </div>`;
 
-        const response = await send({
+        const response = await send(ej.visitorTemplateId || ej.templateId, {
             to_email: visitorEmail,
+            user_email: visitorEmail,
             to_name: conv.visitor_name,
             from_name: 'Nexus Hub Limited',
             from_email: ej.toEmail,
