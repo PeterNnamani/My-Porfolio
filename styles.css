@@ -211,61 +211,71 @@ img {
     white-space: nowrap;
 }
 
-.logo-mark,
-.logo-svg {
+.logo-mark {
     --logo-color: #0a0f1e;
-    display: block;
+    --logo-zoom: 360%;
+    --logo-y: 42%;
+    display: inline-block;
     flex-shrink: 0;
-    height: clamp(3.25rem, 7.5vw, 5.75rem);
-    width: auto;
-    aspect-ratio: 388 / 108;
-    color: var(--logo-color);
-    background: none;
+    width: 20rem;
+    height: 5.5rem;
     background-color: var(--logo-color);
-    -webkit-mask-image: url('assets/nexus-mask.svg');
-    mask-image: url('assets/nexus-mask.svg');
-    -webkit-mask-size: contain;
-    mask-size: contain;
+    -webkit-mask-image: url('assets/logo.png');
+    mask-image: url('assets/logo.png');
+    -webkit-mask-size: var(--logo-zoom) auto;
+    mask-size: var(--logo-zoom) auto;
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-    mask-position: center;
-    transition: color var(--transition), background-color var(--transition), filter var(--transition);
+    -webkit-mask-position: center var(--logo-y);
+    mask-position: center var(--logo-y);
+    transition: background-color var(--transition), filter var(--transition);
 }
 
-[data-theme="dark"] .logo-mark,
-[data-theme="dark"] .logo-svg {
+[data-theme="dark"] .logo-mark {
     --logo-color: #ffffff;
 }
 
 .logo-mark--lg {
-    height: clamp(5.5rem, 14vw, 10rem);
+    width: 34rem;
+    height: 9.5rem;
+    --logo-zoom: 360%;
 }
 
 .logo-mark--chat {
-    height: clamp(2.75rem, 6vw, 3.75rem);
+    width: 11rem;
+    height: 3rem;
+    --logo-zoom: 360%;
 }
 
-.site-header:not(.scrolled) .logo-mark,
-.site-header:not(.scrolled) .logo-svg {
+@media (max-width: 768px) {
+    .logo-mark {
+        width: 13rem;
+        height: 3.6rem;
+    }
+
+    .logo-mark--lg {
+        width: 22rem;
+        height: 6rem;
+    }
+}
+
+.site-header:not(.scrolled) .logo-mark {
     --logo-color: #ffffff;
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
 }
 
-.site-header.scrolled .logo-mark,
-.site-header.scrolled .logo-svg {
+.site-header.scrolled .logo-mark {
     filter: none;
 }
 
-[data-theme="dark"] .site-header.scrolled .logo-mark,
-[data-theme="dark"] .site-header.scrolled .logo-svg {
+[data-theme="dark"] .site-header.scrolled .logo-mark {
     filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.4));
 }
 
-.site-footer .logo-mark,
-.site-footer .logo-svg {
+.site-footer .logo-mark {
     --logo-color: #ffffff;
-    height: clamp(3.5rem, 8vw, 5.5rem);
+    width: 18rem;
+    height: 5rem;
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
 }
 
@@ -1529,7 +1539,8 @@ img {
 
 .chat-brand-mark .logo-mark {
     --logo-color: #ffffff;
-    height: 3.25rem;
+    width: 11rem;
+    height: 3rem;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
 }
 
@@ -2297,10 +2308,6 @@ img {
 @media (max-width: 768px) {
     .main-nav { display: none; }
     .mobile-only { display: flex; }
-
-    .site-header .logo-mark {
-        height: clamp(2.85rem, 14vw, 3.75rem);
-    }
 
     .logo-text {
         font-size: 0.68rem;
