@@ -174,7 +174,7 @@ img {
     left: 0;
     right: 0;
     z-index: 1000;
-    padding: 1rem 0;
+    padding: 1.15rem 0;
     transition: all var(--transition);
 }
 
@@ -198,62 +198,79 @@ img {
 
 .logo {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    align-items: flex-end;
+    gap: 0.65rem;
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
-    font-size: 1.15rem;
+    font-size: 0.8rem;
+    line-height: 1.1;
 }
 
-.logo-mark {
+.logo-text {
+    padding-bottom: 0.45rem;
+    white-space: nowrap;
+}
+
+.logo-mark,
+.logo-svg {
     --logo-color: #0a0f1e;
-    display: inline-block;
+    display: block;
     flex-shrink: 0;
-    width: 7.5rem;
-    height: 2.4rem;
+    height: clamp(3.25rem, 7.5vw, 5.75rem);
+    width: auto;
+    aspect-ratio: 388 / 108;
+    color: var(--logo-color);
     background: none;
     background-color: var(--logo-color);
-    -webkit-mask-image: url('assets/logo.png');
-    mask-image: url('assets/logo.png');
+    -webkit-mask-image: url('assets/nexus-mask.svg');
+    mask-image: url('assets/nexus-mask.svg');
     -webkit-mask-size: contain;
     mask-size: contain;
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
     -webkit-mask-position: center;
     mask-position: center;
-    transition: background-color var(--transition), filter var(--transition);
+    transition: color var(--transition), background-color var(--transition), filter var(--transition);
 }
 
-[data-theme="dark"] .logo-mark {
+[data-theme="dark"] .logo-mark,
+[data-theme="dark"] .logo-svg {
     --logo-color: #ffffff;
 }
 
 .logo-mark--lg {
-    width: 12rem;
-    height: 3.85rem;
+    height: clamp(5.5rem, 14vw, 10rem);
 }
 
 .logo-mark--chat {
-    width: 5.5rem;
-    height: 1.75rem;
+    height: clamp(2.75rem, 6vw, 3.75rem);
 }
 
-.site-header:not(.scrolled) .logo-mark {
+.site-header:not(.scrolled) .logo-mark,
+.site-header:not(.scrolled) .logo-svg {
     --logo-color: #ffffff;
-    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55));
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
 }
 
-.site-header.scrolled .logo-mark {
+.site-header.scrolled .logo-mark,
+.site-header.scrolled .logo-svg {
     filter: none;
 }
 
-[data-theme="dark"] .site-header.scrolled .logo-mark {
-    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.35));
+[data-theme="dark"] .site-header.scrolled .logo-mark,
+[data-theme="dark"] .site-header.scrolled .logo-svg {
+    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.4));
 }
 
-.site-footer .logo-mark {
+.site-footer .logo-mark,
+.site-footer .logo-svg {
     --logo-color: #ffffff;
-    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
+    height: clamp(3.5rem, 8vw, 5.5rem);
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
+}
+
+.site-footer .logo {
+    align-items: flex-end;
 }
 
 .logo-limited {
@@ -1512,7 +1529,8 @@ img {
 
 .chat-brand-mark .logo-mark {
     --logo-color: #ffffff;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+    height: 3.25rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
 }
 
 .chat-online {
@@ -2279,6 +2297,15 @@ img {
 @media (max-width: 768px) {
     .main-nav { display: none; }
     .mobile-only { display: flex; }
+
+    .site-header .logo-mark {
+        height: clamp(2.85rem, 14vw, 3.75rem);
+    }
+
+    .logo-text {
+        font-size: 0.68rem;
+        padding-bottom: 0.25rem;
+    }
 
     .hero-stats {
         gap: 1rem;
