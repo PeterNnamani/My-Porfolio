@@ -113,7 +113,7 @@ img {
 
 .page-loader .logo-mark {
     --logo-color: #ffffff;
-    animation: pulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
 }
 
 .loader-text {
@@ -206,11 +206,12 @@ img {
 }
 
 .logo-mark {
-    --logo-color: var(--text);
+    --logo-color: #0a0f1e;
     display: inline-block;
     flex-shrink: 0;
-    width: 5.25rem;
-    height: 1.65rem;
+    width: 7.5rem;
+    height: 2.4rem;
+    background: none;
     background-color: var(--logo-color);
     -webkit-mask-image: url('assets/logo.png');
     mask-image: url('assets/logo.png');
@@ -220,25 +221,39 @@ img {
     mask-repeat: no-repeat;
     -webkit-mask-position: center;
     mask-position: center;
-    transition: background-color var(--transition);
+    transition: background-color var(--transition), filter var(--transition);
+}
+
+[data-theme="dark"] .logo-mark {
+    --logo-color: #ffffff;
 }
 
 .logo-mark--lg {
-    width: 8.5rem;
-    height: 2.65rem;
+    width: 12rem;
+    height: 3.85rem;
 }
 
-.logo-mark--sm {
-    width: 2.35rem;
-    height: 0.75rem;
+.logo-mark--chat {
+    width: 5.5rem;
+    height: 1.75rem;
 }
 
 .site-header:not(.scrolled) .logo-mark {
     --logo-color: #ffffff;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55));
+}
+
+.site-header.scrolled .logo-mark {
+    filter: none;
+}
+
+[data-theme="dark"] .site-header.scrolled .logo-mark {
+    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.35));
 }
 
 .site-footer .logo-mark {
     --logo-color: #ffffff;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
 }
 
 .logo-limited {
@@ -1488,26 +1503,22 @@ img {
     gap: 0.75rem;
 }
 
-.chat-avatar {
+.chat-brand-mark {
     position: relative;
-    width: 42px;
-    height: 42px;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    border-radius: 12px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
+    flex-shrink: 0;
 }
 
-.chat-avatar .logo-mark {
+.chat-brand-mark .logo-mark {
     --logo-color: #ffffff;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
 }
 
 .chat-online {
     position: absolute;
-    bottom: -1px;
-    right: -1px;
+    bottom: 0;
+    right: -4px;
     width: 12px;
     height: 12px;
     background: #22c55e;
