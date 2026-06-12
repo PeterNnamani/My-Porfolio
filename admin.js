@@ -191,24 +191,26 @@
         replyInput.value = '';
         await loadMessages(activeId);
 
-        let emailOk = false;
+        let emailStatus = '';
         if (activeConv && window.NexusMailer) {
             try {
                 const conv = await ensureAdminToken({ ...activeConv });
                 activeConv = conv;
-                await NexusMailer.notifyVisitor(conv, text);
-                emailOk = true;
+                const result = await NexusMailer.notifyVisitor(conv, text);
+                if (result?.sent) {
+                    emailStatus = ' and emailed to ' + conv.visitor_email;
+                } else if (result?.reason === 'invalid_visitor_email') {
+                    emailStatus = ' (visitor email invalid — chat reply only)';
+                } else {
+                    emailStatus = ' (visitor email not sent — check EmailJS)';
+                }
             } catch (e) {
                 console.warn('Visitor email failed:', e);
+                emailStatus = ' (visitor email failed — chat reply saved)';
             }
         }
 
-        setStatus(
-            emailOk
-                ? '✓ Reply sent to website chat and emailed to ' + (activeConv?.visitor_email || 'visitor')
-                : '✓ Reply sent to website chat' + (activeConv ? ' (visitor email not sent — check EmailJS)' : ''),
-            'ok'
-        );
+        setStatus('✓ Reply sent to website chat' + emailStatus, 'ok');
     }
 
     async function closeConv() {

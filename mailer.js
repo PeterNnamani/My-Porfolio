@@ -63,6 +63,21 @@ window.NexusMailer = (function () {
         return d.innerHTML;
     }
 
+    function normalizeEmail(email) {
+        return String(email || '').trim().toLowerCase();
+    }
+
+    function isValidEmail(email) {
+        const e = normalizeEmail(email);
+        if (!e || e.length > 254) return false;
+        const re = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i;
+        if (!re.test(e)) return false;
+        const [local, domain] = e.split('@');
+        if (!local || local.length > 64 || !domain || domain.length > 253) return false;
+        if (local.startsWith('.') || local.endsWith('.') || local.includes('..')) return false;
+        return true;
+    }
+
     async function send(params) {
         await init();
         const ej = emailjsCfg();
@@ -106,16 +121,19 @@ Do NOT use Yahoo/Gmail Reply — use the link above so your reply shows in the c
   </div>
 </div>`;
 
+        const visitorEmail = normalizeEmail(conv.visitor_email);
+
         return send({
             to_email: ej.toEmail,
             to_name: 'Nexus Hub Team',
-            from_name: conv.visitor_name,
-            from_email: conv.visitor_email,
+            from_name: 'Nexus Hub Website',
+            from_email: ej.toEmail,
             reply_to: ej.toEmail,
             name: conv.visitor_name,
-            email: conv.visitor_email,
+            // Use admin inbox for "email" so templates with {{email}} as To still deliver here
+            email: ej.toEmail,
             visitor_name: conv.visitor_name,
-            visitor_email: conv.visitor_email,
+            visitor_email: visitorEmail,
             subject: `[${ref}] ${conv.topic} — ${conv.visitor_name}`,
             topic: conv.topic,
             message: plainText,
@@ -127,6 +145,11 @@ Do NOT use Yahoo/Gmail Reply — use the link above so your reply shows in the c
     }
 
     async function notifyVisitor(conv, replyText) {
+        const visitorEmail = normalizeEmail(conv.visitor_email);
+        if (!isValidEmail(visitorEmail)) {
+            return { sent: false, reason: 'invalid_visitor_email', email: visitorEmail };
+        }
+
         const ej = emailjsCfg();
         const ref = convRef(conv.id);
         const now = new Date().toLocaleString('en-NG', { dateStyle: 'full', timeStyle: 'short' });
@@ -156,21 +179,22 @@ Reference: ${ref}`;
   </div>
 </div>`;
 
-        return send({
-            to_email: conv.visitor_email,
+        const response = await send({
+            to_email: visitorEmail,
             to_name: conv.visitor_name,
             from_name: 'Nexus Hub Limited',
             from_email: ej.toEmail,
             reply_to: ej.toEmail,
             name: conv.visitor_name,
-            email: conv.visitor_email,
+            email: visitorEmail,
             subject: `Re: [${ref}] ${conv.topic} — Nexus Hub Reply`,
             topic: conv.topic,
             message: plainText,
             html_message: htmlContent,
             inquiry_date: now
         });
+        return { sent: true, response };
     }
 
-    return { init, notifyAdmin, notifyVisitor, adminReplyUrl, convRef };
+    return { init, notifyAdmin, notifyVisitor, adminReplyUrl, convRef, isValidEmail, normalizeEmail };
 })();

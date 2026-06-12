@@ -476,11 +476,15 @@ function initChatWidget() {
             appendMessageEl('bot', `Nice to meet you, <strong>${escapeHtml(ob.name)}</strong>! What's your <strong>email</strong>?`, new Date().toISOString());
             input.placeholder = 'your@email.com';
         } else if (ob.step === 'email') {
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                appendMessageEl('bot', 'Please enter a valid email address.', new Date().toISOString());
+            const email = window.NexusMailer?.normalizeEmail(value) || value.trim().toLowerCase();
+            const valid = window.NexusMailer?.isValidEmail
+                ? window.NexusMailer.isValidEmail(email)
+                : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            if (!valid) {
+                appendMessageEl('bot', 'Please enter a valid email address (e.g. <strong>name@gmail.com</strong>).', new Date().toISOString());
                 return;
             }
-            ob.email = value;
+            ob.email = email;
             ob.step = 'message';
             appendMessageEl('bot', 'Share the <strong>details of your inquiry</strong>.', new Date().toISOString());
             input.placeholder = 'Describe your project...';
