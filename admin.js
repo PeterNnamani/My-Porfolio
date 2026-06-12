@@ -82,10 +82,15 @@
     });
 
     async function loadConversations() {
-        const { data } = await supabase
+        const { data, error } = await supabase
             .from(T.conversations)
             .select('*')
             .order('updated_at', { ascending: false });
+
+        if (error) {
+            convListEl.innerHTML = `<div class="admin-empty">Database error: ${esc(error.message)}<br><br>Run <code>supabase/fix-permissions.sql</code> in Supabase SQL Editor.</div>`;
+            return;
+        }
 
         if (!data?.length) {
             convListEl.innerHTML = '<div class="admin-empty">No conversations yet</div>';

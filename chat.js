@@ -133,6 +133,13 @@ function initChatWidget() {
         widget.classList.contains('open') ? closeChat() : openChat();
     }
 
+    async function checkSupabaseConnection() {
+        if (!supabase) return { ok: false, reason: 'not_configured' };
+        const { error } = await supabase.from(T.conversations).select('id').limit(1);
+        if (error) return { ok: false, reason: formatError(error) };
+        return { ok: true };
+    }
+
     async function loadConversationList() {
         const visitorId = getVisitorId();
 
@@ -143,7 +150,19 @@ function initChatWidget() {
                 .eq('visitor_id', visitorId)
                 .order('updated_at', { ascending: false });
 
-            if (!error && data) state.conversations = data;
+            if (error) {
+                console.error('Load conversations failed:', error);
+                state.conversations = [];
+                convListEl.innerHTML = `
+                    <div class="chat-list-empty">
+                        <i class="ri-error-warning-line"></i>
+                        <p>Cannot load chats</p>
+                        <span>${escapeHtml(formatError(error))}</span>
+                        <span style="margin-top:0.5rem;font-size:0.8rem;">Run <code>supabase/fix-permissions.sql</code> in Supabase SQL Editor.</span>
+                    </div>`;
+                return;
+            }
+            if (data) state.conversations = data;
         } else {
             const local = getLocalData();
             state.conversations = local.conversations
@@ -656,6 +675,13 @@ function initChatWidget() {
     // Init
     supabase = initSupabase();
     if (window.NexusMailer) NexusMailer.init().catch(e => console.warn('EmailJS preload:', e));
+    if (supabase) {
+        checkSupabaseConnection().then((r) => {
+            if (!r.ok) console.error('Supabase connection check failed:', r.reason);
+        });
+    } else {
+        console.warn('Chat using local storage only — add Supabase keys to config.js');
+    }
 
     launcher.addEventListener('click', toggleChat);
     document.getElementById('chat-close').addEventListener('click', closeChat);

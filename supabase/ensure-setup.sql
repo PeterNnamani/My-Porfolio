@@ -1,5 +1,6 @@
--- Run once to ensure chat + email reply flow works
--- Supabase → SQL Editor → Run
+-- Run this if chat send/receive fails OR you got "policy already exists" from schema.sql
+-- Supabase → SQL Editor → New query → paste ALL → Run
+-- (Safe to re-run — drops and recreates policies)
 
 alter table nexus_hub_conversations add column if not exists admin_token text;
 create index if not exists idx_nexus_hub_conversations_token on nexus_hub_conversations(admin_token);
@@ -22,3 +23,12 @@ create policy "nexus_hub insert conversations" on nexus_hub_conversations for in
 create policy "nexus_hub update conversations" on nexus_hub_conversations for update using (true);
 create policy "nexus_hub read messages" on nexus_hub_messages for select using (true);
 create policy "nexus_hub insert messages" on nexus_hub_messages for insert with check (true);
+
+do $$ begin
+  alter publication supabase_realtime add table nexus_hub_messages;
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  alter publication supabase_realtime add table nexus_hub_conversations;
+exception when duplicate_object then null;
+end $$;

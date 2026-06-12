@@ -1,5 +1,6 @@
--- Run this if chat insert still fails after creating tables
--- Supabase → SQL Editor → paste → Run
+-- Run this if chat send/receive fails or you see "policy already exists"
+-- Supabase → SQL Editor → New query → paste ALL → Run
+-- (Safe to re-run)
 
 grant usage on schema public to anon, authenticated;
 grant all on nexus_hub_conversations to anon, authenticated;
@@ -21,3 +22,12 @@ create policy "nexus_hub update conversations" on nexus_hub_conversations for up
 
 create policy "nexus_hub read messages" on nexus_hub_messages for select using (true);
 create policy "nexus_hub insert messages" on nexus_hub_messages for insert with check (true);
+
+do $$ begin
+  alter publication supabase_realtime add table nexus_hub_messages;
+exception when duplicate_object then null;
+end $$;
+do $$ begin
+  alter publication supabase_realtime add table nexus_hub_conversations;
+exception when duplicate_object then null;
+end $$;
