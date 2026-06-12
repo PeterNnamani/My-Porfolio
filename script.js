@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initProductFilters();
     initSmoothScroll();
     initBackToTop();
-    initContactForm();
+    initChatWidget();
     initActiveNav();
 });
 
@@ -315,36 +315,345 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeModal();
 });
 
-/* Contact form via EmailJS */
-function initContactForm() {
+/* Chat Widget */
+const CHAT_EMAIL = 'nexushub.officiel@yahoo.com';
+
+function initChatWidget() {
+    const widget = document.getElementById('chat-widget');
+    const panel = document.getElementById('chat-panel');
+    const launcher = document.getElementById('chat-launcher');
+    const closeBtn = document.getElementById('chat-close');
+    const messagesEl = document.getElementById('chat-messages');
+    const quickRepliesEl = document.getElementById('chat-quick-replies');
+    const input = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('chat-send');
+
+    const state = {
+        step: 'topic',
+        name: '',
+        email: '',
+        topic: '',
+        message: '',
+        initialized: false,
+        emailjsReady: false
+    };
+
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js';
-    script.onload = () => emailjs.init('N3kN7OWGID6l2hxsI');
+    script.onload = () => {
+        emailjs.init('N3kN7OWGID6l2hxsI');
+        state.emailjsReady = true;
+    };
     document.body.appendChild(script);
 
-    const form = document.getElementById('contactForm');
-    const feedback = document.getElementById('contactFormFeedback');
+    function openChat() {
+        widget.classList.add('open', 'seen');
+        panel.setAttribute('aria-hidden', 'false');
+        if (!state.initialized) {
+            state.initialized = true;
+            startConversation();
+        }
+        setTimeout(() => input.focus(), 350);
+    }
 
-    if (!form) return;
+    function closeChat() {
+        widget.classList.remove('open');
+        panel.setAttribute('aria-hidden', 'true');
+    }
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        feedback.textContent = 'Sending...';
-        feedback.className = 'form-feedback sending';
+    function toggleChat() {
+        widget.classList.contains('open') ? closeChat() : openChat();
+    }
 
-        emailjs.send('service_5c7dbcf', 'template_pi624hk', {
-            from_name: document.getElementById('name').value,
-            from_email: document.getElementById('email').value,
-            subject: document.getElementById('subject').value,
-            message: document.getElementById('message').value,
-            to_email: 'peternnamani001@gmail.com'
-        }).then(() => {
-            feedback.textContent = 'Message sent successfully! We\'ll get back to you soon.';
-            feedback.className = 'form-feedback success';
-            form.reset();
-        }).catch(() => {
-            feedback.textContent = 'Failed to send. Please email us directly.';
-            feedback.className = 'form-feedback error';
+    launcher.addEventListener('click', toggleChat);
+    closeBtn.addEventListener('click', closeChat);
+
+    document.querySelectorAll('.open-chat').forEach(el => {
+        el.addEventListener('click', (e) => {
+            e.preventDefault();
+            openChat();
         });
     });
+
+    function getTime() {
+        return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function scrollToBottom() {
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function addMessage(type, text, options = {}) {
+        const msg = document.createElement('div');
+        msg.className = `chat-msg ${type}`;
+
+        if (options.successCard) {
+            msg.classList.add('success-card');
+            msg.innerHTML = options.successCard;
+        } else if (type === 'system') {
+            msg.innerHTML = `<div class="chat-msg-bubble">${text}</div>`;
+        } else {
+            const avatar = type === 'bot'
+                ? '<i class="ri-code-s-slash-line"></i>'
+                : '<i class="ri-user-3-line"></i>';
+            msg.innerHTML = `
+                <div class="chat-msg-avatar">${avatar}</div>
+                <div class="chat-msg-bubble">
+                    ${text}
+                    <span class="chat-msg-time">${getTime()}</span>
+                </div>
+            `;
+        }
+
+        messagesEl.appendChild(msg);
+        scrollToBottom();
+    }
+
+    function showTyping(duration = 900) {
+        return new Promise(resolve => {
+            const typing = document.createElement('div');
+            typing.className = 'chat-typing';
+            typing.innerHTML = `
+                <div class="chat-msg-avatar" style="background:linear-gradient(135deg,var(--primary),var(--accent));color:white;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:0.85rem;">
+                    <i class="ri-code-s-slash-line"></i>
+                </div>
+                <div class="chat-typing-dots"><span></span><span></span><span></span></div>
+            `;
+            messagesEl.appendChild(typing);
+            scrollToBottom();
+            setTimeout(() => {
+                typing.remove();
+                resolve();
+            }, duration);
+        });
+    }
+
+    function setQuickReplies(replies) {
+        quickRepliesEl.innerHTML = '';
+        replies.forEach(label => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'chat-quick-btn';
+            btn.textContent = label;
+            btn.addEventListener('click', () => {
+                quickRepliesEl.innerHTML = '';
+                handleUserInput(label);
+            });
+            quickRepliesEl.appendChild(btn);
+        });
+    }
+
+    function setPlaceholder(text) {
+        input.placeholder = text;
+    }
+
+    async function botSay(text, delay = 700) {
+        await showTyping(delay);
+        addMessage('bot', text);
+    }
+
+    async function handleTopicStep(value) {
+        state.topic = value;
+        state.step = 'name';
+        await botSay('Great choice! May I have your <strong>full name</strong>?');
+        setPlaceholder('Enter your full name...');
+    }
+
+    async function startConversation() {
+        await botSay('👋 Welcome to <strong>Nexus Hub Limited</strong>! I\'m here to connect you with our team.');
+        await botSay('What can we help you with today?');
+        setQuickReplies(['Web Development', 'Mobile App', 'Get a Quote', 'General Inquiry']);
+        setPlaceholder('Or type your inquiry...');
+        state.step = 'topic';
+    }
+
+    async function resetConversation() {
+        messagesEl.innerHTML = '';
+        quickRepliesEl.innerHTML = '';
+        state.name = '';
+        state.email = '';
+        state.topic = '';
+        state.message = '';
+        state.step = 'topic';
+        input.disabled = false;
+        sendBtn.disabled = false;
+        setPlaceholder('Type your message...');
+        await startConversation();
+    }
+
+    async function handleUserInput(text) {
+        const value = text.trim();
+        if (!value) return;
+
+        if (state.step === 'done') {
+            await resetConversation();
+            if (value !== 'Start New Inquiry') {
+                addMessage('user', value);
+                input.value = '';
+                await handleTopicStep(value);
+            }
+            return;
+        }
+
+        addMessage('user', value);
+        input.value = '';
+
+        switch (state.step) {
+            case 'topic':
+                await handleTopicStep(value);
+                break;
+            case 'name':
+                state.name = value;
+                state.step = 'email';
+                await botSay(`Nice to meet you, <strong>${state.name}</strong>! What\'s your <strong>email address</strong>?`);
+                setPlaceholder('your@email.com');
+                break;
+
+            case 'email':
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                    await botSay('Please enter a valid email address so our team can reach you.');
+                    return;
+                }
+                state.email = value;
+                state.step = 'message';
+                await botSay('Perfect! Please share the <strong>details of your project or inquiry</strong>.');
+                setPlaceholder('Describe your project...');
+                break;
+
+            case 'message':
+                state.message = value;
+                state.step = 'sending';
+                input.disabled = true;
+                sendBtn.disabled = true;
+                quickRepliesEl.innerHTML = '';
+                await botSay('Thank you! Sending your message to our team now...');
+                await sendChatEmail();
+                break;
+        }
+    }
+
+    function buildEmailContent() {
+        const now = new Date().toLocaleString('en-NG', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        const plainText = `
+╔══════════════════════════════════════════════════╗
+║         NEXUS HUB LIMITED — NEW INQUIRY            ║
+╚══════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  CLIENT DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Name       : ${state.name}
+  Email      : ${state.email}
+  Topic      : ${state.topic}
+  Received   : ${now}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  MESSAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${state.message}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Sent via Nexus Hub Website Live Chat
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`.trim();
+
+        const htmlContent = `
+<div style="font-family:'Segoe UI',Arial,sans-serif;max-width:600px;margin:0 auto;background:#f8fafc;padding:20px;">
+  <div style="background:linear-gradient(135deg,#1e3a5f,#0f172a);border-radius:12px 12px 0 0;padding:28px 32px;text-align:center;">
+    <div style="width:48px;height:48px;background:linear-gradient(135deg,#3b82f6,#06b6d4);border-radius:12px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;">
+      <span style="color:white;font-size:22px;font-weight:bold;">&#60;/&#62;</span>
+    </div>
+    <h1 style="color:white;margin:0;font-size:20px;font-weight:700;letter-spacing:0.5px;">NEXUS HUB LIMITED</h1>
+    <p style="color:#94a3b8;margin:6px 0 0;font-size:13px;">New Client Inquiry via Live Chat</p>
+  </div>
+  <div style="background:white;border-radius:0 0 12px 12px;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+    <div style="background:#f1f5f9;border-radius:8px;padding:20px;margin-bottom:24px;">
+      <h2 style="color:#0f172a;font-size:14px;text-transform:uppercase;letter-spacing:1px;margin:0 0 16px;border-bottom:2px solid #3b82f6;padding-bottom:8px;display:inline-block;">Client Details</h2>
+      <table style="width:100%;border-collapse:collapse;">
+        <tr><td style="padding:8px 0;color:#64748b;font-size:13px;width:100px;">Name</td><td style="padding:8px 0;color:#0f172a;font-size:14px;font-weight:600;">${state.name}</td></tr>
+        <tr><td style="padding:8px 0;color:#64748b;font-size:13px;">Email</td><td style="padding:8px 0;"><a href="mailto:${state.email}" style="color:#3b82f6;font-size:14px;text-decoration:none;">${state.email}</a></td></tr>
+        <tr><td style="padding:8px 0;color:#64748b;font-size:13px;">Topic</td><td style="padding:8px 0;"><span style="background:#dbeafe;color:#1d4ed8;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;">${state.topic}</span></td></tr>
+        <tr><td style="padding:8px 0;color:#64748b;font-size:13px;">Received</td><td style="padding:8px 0;color:#475569;font-size:13px;">${now}</td></tr>
+      </table>
+    </div>
+    <h2 style="color:#0f172a;font-size:14px;text-transform:uppercase;letter-spacing:1px;margin:0 0 12px;">Message</h2>
+    <div style="background:#f8fafc;border-left:4px solid #3b82f6;padding:16px 20px;border-radius:0 8px 8px 0;color:#334155;font-size:14px;line-height:1.7;white-space:pre-wrap;">${state.message.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+    <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e2e8f0;text-align:center;">
+      <p style="color:#94a3b8;font-size:12px;margin:0;">Sent via Nexus Hub Limited Website Live Chat</p>
+    </div>
+  </div>
+</div>`.trim();
+
+        return { plainText, htmlContent, now };
+    }
+
+    async function sendChatEmail() {
+        const { plainText, htmlContent, now } = buildEmailContent();
+
+        try {
+            if (!state.emailjsReady) {
+                await new Promise((resolve, reject) => {
+                    const check = setInterval(() => {
+                        if (state.emailjsReady) { clearInterval(check); resolve(); }
+                    }, 100);
+                    setTimeout(() => { clearInterval(check); reject(new Error('timeout')); }, 5000);
+                });
+            }
+
+            await emailjs.send('service_5c7dbcf', 'template_pi624hk', {
+                to_email: CHAT_EMAIL,
+                from_name: state.name,
+                from_email: state.email,
+                reply_to: state.email,
+                subject: `[Nexus Hub] ${state.topic} — ${state.name}`,
+                message: plainText,
+                html_message: htmlContent,
+                topic: state.topic,
+                client_name: state.name,
+                client_email: state.email,
+                inquiry_date: now
+            });
+
+            addMessage('bot', '', {
+                successCard: `
+                    <div class="chat-success-card">
+                        <div class="chat-success-icon"><i class="ri-check-line"></i></div>
+                        <h5>Message Delivered!</h5>
+                        <p>Your inquiry has been sent to our team at <strong>${CHAT_EMAIL}</strong>. We'll respond within 24 hours.</p>
+                    </div>
+                `
+            });
+
+            state.step = 'done';
+            setPlaceholder('Type to start a new inquiry...');
+            input.disabled = false;
+            sendBtn.disabled = false;
+            setQuickReplies(['Start New Inquiry']);
+        } catch {
+            await botSay('Sorry, we couldn\'t send your message. Please email us directly at <strong>nexushub.officiel@yahoo.com</strong>.');
+            state.step = 'message';
+            input.disabled = false;
+            sendBtn.disabled = false;
+        }
+    }
+
+    function sendMessage() {
+        if (state.step === 'done' || state.step === 'sending') return;
+        handleUserInput(input.value);
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    window.openChat = openChat;
 }
