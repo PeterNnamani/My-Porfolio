@@ -40,20 +40,36 @@ function initHeader() {
 }
 
 /* Theme toggle */
+function getActiveTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+}
+
+function updateFavicon(theme) {
+    const link = document.getElementById('site-favicon');
+    if (!link) return;
+    link.href = theme === 'dark' ? 'favicon-dark.svg' : 'favicon-light.svg';
+}
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    updateFavicon(theme);
+}
+
 function initTheme() {
     const toggle = document.getElementById('theme-toggle');
     const saved = localStorage.getItem('theme');
 
     if (saved) {
-        document.documentElement.setAttribute('data-theme', saved);
+        applyTheme(saved);
     } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.setAttribute('data-theme', 'dark');
+        applyTheme('dark');
+    } else {
+        updateFavicon('light');
     }
 
     toggle.addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
+        const next = getActiveTheme() === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
         localStorage.setItem('theme', next);
     });
 }

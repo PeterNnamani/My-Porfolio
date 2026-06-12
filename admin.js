@@ -264,6 +264,12 @@
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendReply(); }
     });
 
+    const savedTheme = localStorage.getItem('theme')
+        || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+    const favicon = document.getElementById('site-favicon');
+    if (favicon) favicon.href = savedTheme === 'dark' ? 'favicon-dark.svg' : 'favicon-light.svg';
+
     supabase = initClient();
     if (window.NexusMailer) NexusMailer.init().catch(e => console.warn('EmailJS preload:', e));
 
