@@ -98,6 +98,18 @@ function initChatWidget() {
         return d.innerHTML;
     }
 
+    function formatError(err) {
+        if (!err) return 'Unknown error';
+        if (typeof err === 'string') return err;
+        const parts = [err.message, err.details, err.hint, err.code].filter(Boolean);
+        if (parts.length) return parts.join(' — ');
+        try {
+            return JSON.stringify(err);
+        } catch {
+            return String(err);
+        }
+    }
+
     function showView(name) {
         state.view = name;
         listView.classList.toggle('hidden', name !== 'list');
@@ -295,32 +307,45 @@ function initChatWidget() {
     }
 
     async function insertMessage(convId, sender, content) {
+        const now = new Date().toISOString();
         const row = {
+            id: crypto.randomUUID(),
             conversation_id: convId,
             sender,
             content,
-            created_at: new Date().toISOString()
+            created_at: now
         };
 
         if (supabase) {
-            const { data, error } = await supabase.from(T.messages).insert(row).select().single();
+            const { error } = await supabase.from(T.messages).insert({
+                id: row.id,
+                conversation_id: convId,
+                sender,
+                content
+            });
             if (error) throw error;
-            await supabase.from(T.conversations).update({ updated_at: new Date().toISOString() }).eq('id', convId);
-            return data;
+
+            const { error: updateError } = await supabase
+                .from(T.conversations)
+                .update({ updated_at: now })
+                .eq('id', convId);
+            if (updateError) console.warn('Conversation update failed:', updateError);
+
+            return row;
         }
 
         const local = getLocalData();
-        row.id = crypto.randomUUID();
         if (!local.messages[convId]) local.messages[convId] = [];
         local.messages[convId].push(row);
         const conv = local.conversations.find(c => c.id === convId);
-        if (conv) conv.updated_at = row.created_at;
+        if (conv) conv.updated_at = now;
         saveLocalData(local);
         return row;
     }
 
     async function createConversation(visitorName, visitorEmail, topic) {
         const visitorId = getVisitorId();
+        const now = new Date().toISOString();
         const row = {
             id: crypto.randomUUID(),
             visitor_id: visitorId,
@@ -328,20 +353,21 @@ function initChatWidget() {
             visitor_email: visitorEmail,
             topic,
             status: 'open',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
+            created_at: now,
+            updated_at: now
         };
 
         if (supabase) {
-            const { data, error } = await supabase.from(T.conversations).insert({
+            const { error } = await supabase.from(T.conversations).insert({
+                id: row.id,
                 visitor_id: visitorId,
                 visitor_name: visitorName,
                 visitor_email: visitorEmail,
                 topic,
                 status: 'open'
-            }).select().single();
+            });
             if (error) throw error;
-            return data;
+            return row;
         }
 
         const local = getLocalData();
@@ -436,8 +462,8 @@ function initChatWidget() {
                 await openConversation(conv.id);
             } catch (e) {
                 console.error('Create conversation failed:', e);
-                const errMsg = e?.message || e?.details || 'Unknown error';
-                appendMessageEl('bot', `Could not start conversation: <strong>${escapeHtml(String(errMsg))}</strong>. Check Supabase tables are created.`, new Date().toISOString());
+                const errMsg = formatError(e);
+                appendMessageEl('bot', `Could not start conversation: <strong>${escapeHtml(errMsg)}</strong>. Run <code>supabase/schema.sql</code> in your Supabase SQL Editor if tables are missing.`, new Date().toISOString());
                 ob.step = 'message';
                 input.disabled = false;
                 sendBtn.disabled = false;
@@ -500,7 +526,7 @@ function initChatWidget() {
         } catch (e) {
             console.error('Send failed:', e);
             input.value = text;
-            appendMessageEl('bot', `Failed to send: ${e.message || 'Please try again.'}`, new Date().toISOString());
+            appendMessageEl('bot', `Failed to send: ${escapeHtml(formatError(e))}`, new Date().toISOString());
         }
 
         input.disabled = false;

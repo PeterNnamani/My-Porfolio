@@ -34,6 +34,11 @@ create policy "nexus_hub update conversations" on nexus_hub_conversations for up
 create policy "nexus_hub read messages" on nexus_hub_messages for select using (true);
 create policy "nexus_hub insert messages" on nexus_hub_messages for insert with check (true);
 
+-- Permissions for anon/authenticated roles (required for browser chat)
+grant usage on schema public to anon, authenticated;
+grant all on nexus_hub_conversations to anon, authenticated;
+grant all on nexus_hub_messages to anon, authenticated;
+
 -- Realtime: if this errors, enable manually in Dashboard → Database → Replication
 alter publication supabase_realtime add table nexus_hub_messages;
 alter publication supabase_realtime add table nexus_hub_conversations;
