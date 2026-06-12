@@ -44,6 +44,10 @@
     padding: 0;
 }
 
+.hidden {
+    display: none !important;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -1819,6 +1823,236 @@ img {
 
 .chat-powered i {
     color: var(--primary);
+}
+
+/* Chat views & conversation list */
+.chat-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.chat-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-list-toolbar {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--card-bg);
+}
+
+.chat-new-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+.chat-conversation-list {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--bg-secondary);
+}
+
+.chat-list-empty {
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.chat-list-empty i {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+    display: block;
+    opacity: 0.5;
+}
+
+.chat-conv-item {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    background: var(--card-bg);
+    cursor: pointer;
+    text-align: left;
+    transition: background var(--transition);
+    font-family: inherit;
+    color: var(--text);
+}
+
+.chat-conv-item:hover,
+.chat-conv-item.active {
+    background: rgba(59, 130, 246, 0.06);
+}
+
+.chat-conv-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: rgba(59, 130, 246, 0.12);
+    color: var(--primary);
+}
+
+.chat-conv-icon.closed {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+}
+
+.chat-conv-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.chat-conv-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.chat-conv-top strong {
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-conv-top span {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.chat-conv-body p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.35rem;
+}
+
+.chat-conv-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 50px;
+    background: rgba(59, 130, 246, 0.12);
+    color: var(--primary);
+}
+
+.chat-conv-badge.closed {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+}
+
+.chat-header-thread {
+    gap: 0.5rem;
+}
+
+.chat-back-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.chat-thread-title {
+    flex: 1;
+    min-width: 0;
+}
+
+.chat-thread-title h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-thread-status {
+    font-size: 0.7rem;
+    color: #94a3b8;
+}
+
+.chat-thread-status.closed {
+    color: #34d399;
+}
+
+.chat-thread-actions {
+    padding: 0.5rem 1rem;
+    border-top: 1px solid var(--border);
+    background: var(--card-bg);
+}
+
+.chat-resolve-btn {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-family: inherit;
+    transition: all var(--transition);
+}
+
+.chat-resolve-btn:hover {
+    border-color: #10b981;
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.06);
+}
+
+.chat-admin-label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+}
+
+.chat-onboarding {
+    padding: 0.75rem 1rem;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.chat-onboarding-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.chat-onboarding-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.chat-notification.hidden {
+    display: none;
 }
 
 /* ===== Back to Top ===== */

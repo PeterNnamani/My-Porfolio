@@ -522,35 +522,62 @@
     <!-- Chat Widget -->
     <div id="chat-widget" class="chat-widget">
         <div id="chat-panel" class="chat-panel" aria-hidden="true">
-            <div class="chat-header">
-                <div class="chat-header-info">
-                    <div class="chat-avatar">
-                        <i class="ri-code-s-slash-line"></i>
-                        <span class="chat-online"></span>
+            <!-- List view -->
+            <div id="chat-list-view" class="chat-view">
+                <div class="chat-header">
+                    <div class="chat-header-info">
+                        <div class="chat-avatar">
+                            <i class="ri-code-s-slash-line"></i>
+                            <span class="chat-online"></span>
+                        </div>
+                        <div>
+                            <h4>Nexus Hub Support</h4>
+                            <span class="chat-status"><i class="ri-record-circle-fill"></i> Your conversations</span>
+                        </div>
                     </div>
-                    <div>
-                        <h4>Nexus Hub Support</h4>
-                        <span class="chat-status"><i class="ri-record-circle-fill"></i> Online — replies within 24hrs</span>
-                    </div>
+                    <button id="chat-close" class="chat-close" aria-label="Close chat">
+                        <i class="ri-close-line"></i>
+                    </button>
                 </div>
-                <button id="chat-close" class="chat-close" aria-label="Close chat">
-                    <i class="ri-close-line"></i>
-                </button>
+                <div class="chat-list-toolbar">
+                    <button type="button" id="chat-new-btn" class="btn btn-primary btn-sm chat-new-btn">
+                        <i class="ri-add-line"></i> New Chat
+                    </button>
+                </div>
+                <div id="chat-conversation-list" class="chat-conversation-list"></div>
             </div>
 
-            <div class="chat-messages" id="chat-messages"></div>
-
-            <div class="chat-quick-replies" id="chat-quick-replies"></div>
-
-            <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off">
-                <button id="chat-send" class="chat-send" aria-label="Send message">
-                    <i class="ri-send-plane-2-fill"></i>
-                </button>
-            </div>
-
-            <div class="chat-powered">
-                <i class="ri-shield-check-line"></i> Secured by Nexus Hub
+            <!-- Thread view -->
+            <div id="chat-thread-view" class="chat-view hidden">
+                <div class="chat-header chat-header-thread">
+                    <button type="button" id="chat-back-btn" class="chat-back-btn" aria-label="Back to list">
+                        <i class="ri-arrow-left-line"></i>
+                    </button>
+                    <div class="chat-thread-title">
+                        <h4 id="chat-thread-topic">Conversation</h4>
+                        <span id="chat-thread-status" class="chat-thread-status">Open</span>
+                    </div>
+                    <button type="button" id="chat-close-thread" class="chat-close" aria-label="Close chat">
+                        <i class="ri-close-line"></i>
+                    </button>
+                </div>
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="chat-quick-replies" id="chat-quick-replies"></div>
+                <div id="chat-onboarding" class="chat-onboarding hidden"></div>
+                <div class="chat-input-area" id="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off">
+                    <button id="chat-send" class="chat-send" aria-label="Send message">
+                        <i class="ri-send-plane-2-fill"></i>
+                    </button>
+                </div>
+                <div class="chat-thread-actions" id="chat-thread-actions">
+                    <button type="button" id="chat-resolve-btn" class="chat-resolve-btn">
+                        <i class="ri-check-double-line"></i> Mark as resolved
+                    </button>
+                </div>
+                <div class="chat-powered">
+                    <i class="ri-shield-check-line"></i> Secured by Nexus Hub
+                </div>
             </div>
         </div>
 
@@ -558,7 +585,7 @@
             <i class="ri-message-3-fill chat-launcher-icon"></i>
             <i class="ri-close-line chat-launcher-close"></i>
             <span class="chat-pulse"></span>
-            <span class="chat-notification" id="chat-notification">1</span>
+            <span class="chat-notification hidden" id="chat-notification">0</span>
         </button>
     </div>
 
@@ -578,6 +605,9 @@
         </div>
     </div>
 
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="chat.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
