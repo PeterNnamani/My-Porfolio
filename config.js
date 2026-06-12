@@ -18,5 +18,6 @@ window.NEXUS_CONFIG = {
         toEmail: 'nexushub.officiel@yahoo.com'
     },
 
+    // Set your live site URL so admin reply links in emails work (e.g. https://yoursite.github.io)
     siteUrl: typeof window !== 'undefined' ? window.location.origin : ''
 };

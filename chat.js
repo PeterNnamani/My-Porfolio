@@ -29,7 +29,6 @@ function initChatWidget() {
 
     let supabase = null;
     let realtimeChannel = null;
-    let emailjsReady = false;
 
     const state = {
         view: 'list',
@@ -261,6 +260,7 @@ function initChatWidget() {
     }
 
     async function loadMessages(convId) {
+        const prevLastId = state.messages[state.messages.length - 1]?.id;
         if (supabase) {
             const { data } = await supabase
                 .from(T.messages)
@@ -271,7 +271,34 @@ function initChatWidget() {
         } else {
             state.messages = getLocalData().messages[convId] || [];
         }
-        renderMessages();
+        const newLastId = state.messages[state.messages.length - 1]?.id;
+        if (prevLastId !== newLastId || state.messages.length === 0) {
+            renderMessages();
+        }
+    }
+
+    async function getConversationForEmail(convOrId) {
+        const id = typeof convOrId === 'string' ? convOrId : convOrId.id;
+        let conv = state.conversations.find(c => c.id === id) || (typeof convOrId === 'object' ? convOrId : null);
+
+        if (!supabase) return conv;
+
+        const { data, error } = await supabase.from(T.conversations).select('*').eq('id', id).single();
+        if (error || !data) return conv;
+
+        conv = data;
+        if (!conv.admin_token) {
+            const token = generateAdminToken();
+            const { error: tokenErr } = await supabase
+                .from(T.conversations)
+                .update({ admin_token: token })
+                .eq('id', id);
+            if (!tokenErr) conv.admin_token = token;
+        }
+
+        const idx = state.conversations.findIndex(c => c.id === id);
+        if (idx >= 0) state.conversations[idx] = conv;
+        return conv;
     }
 
     function renderMessages() {
@@ -343,9 +370,14 @@ function initChatWidget() {
         return row;
     }
 
+    function generateAdminToken() {
+        return crypto.randomUUID().replace(/-/g, '').slice(0, 20);
+    }
+
     async function createConversation(visitorName, visitorEmail, topic) {
         const visitorId = getVisitorId();
         const now = new Date().toISOString();
+        const adminToken = generateAdminToken();
         const row = {
             id: crypto.randomUUID(),
             visitor_id: visitorId,
@@ -353,19 +385,27 @@ function initChatWidget() {
             visitor_email: visitorEmail,
             topic,
             status: 'open',
+            admin_token: adminToken,
             created_at: now,
             updated_at: now
         };
 
         if (supabase) {
-            const { error } = await supabase.from(T.conversations).insert({
+            const payload = {
                 id: row.id,
                 visitor_id: visitorId,
                 visitor_name: visitorName,
                 visitor_email: visitorEmail,
                 topic,
-                status: 'open'
-            });
+                status: 'open',
+                admin_token: adminToken
+            };
+            let { error } = await supabase.from(T.conversations).insert(payload);
+            if (error && /admin_token/i.test(formatError(error))) {
+                const { admin_token, ...withoutToken } = payload;
+                ({ error } = await supabase.from(T.conversations).insert(withoutToken));
+                delete row.admin_token;
+            }
             if (error) throw error;
             return row;
         }
@@ -455,6 +495,7 @@ function initChatWidget() {
                 await insertMessage(conv.id, 'bot', 'Conversation started. Our team will reply here and via email.');
                 await insertMessage(conv.id, 'user', value);
                 await notifyAdminByEmail(conv, value);
+                appendMessageEl('bot', '✓ Message delivered to our team. We\'ll reply here in the chat.', new Date().toISOString());
                 state.onboarding = null;
                 onboardingEl.classList.add('hidden');
                 threadActions.classList.remove('hidden');
@@ -522,6 +563,7 @@ function initChatWidget() {
                 await notifyAdminByEmail(conv, text);
             } catch (emailErr) {
                 console.warn('Email notify failed (message still saved):', emailErr);
+                appendMessageEl('bot', `Note: email alert failed (${escapeHtml(formatError(emailErr))}). Message saved in chat.`, new Date().toISOString());
             }
         } catch (e) {
             console.error('Send failed:', e);
@@ -557,81 +599,20 @@ function initChatWidget() {
         showView('list');
     }
 
-    function buildEmailContent(conv, messageText) {
-        const now = new Date().toLocaleString('en-NG', { dateStyle: 'full', timeStyle: 'short' });
-        const ref = convRef(conv.id);
-        const adminUrl = `${cfg.siteUrl || window.location.origin}/admin.html?c=${conv.id}`;
-
-        const plainText = `
-NEXUS HUB LIMITED — CHAT MESSAGE
-Reference: ${ref}
-Conversation ID: ${conv.id}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-CLIENT
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Name:  ${conv.visitor_name}
-Email: ${conv.visitor_email}
-Topic: ${conv.topic}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-NEW MESSAGE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-${messageText}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-REPLY IN CHAT (shows on user's website):
-${adminUrl}
-
-To reply by email and sync to chat, use subject:
-[${ref}] Your reply
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`.trim();
-
-        const htmlContent = `
-<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f8fafc;padding:20px;">
-  <div style="background:linear-gradient(135deg,#1e3a5f,#0f172a);border-radius:12px 12px 0 0;padding:24px;text-align:center;color:white;">
-    <h1 style="margin:0;font-size:18px;">Nexus Hub — New Chat Message</h1>
-    <p style="margin:8px 0 0;color:#94a3b8;font-size:13px;">Ref: ${ref}</p>
-  </div>
-  <div style="background:white;padding:24px;border-radius:0 0 12px 12px;">
-    <p><strong>From:</strong> ${escapeHtml(conv.visitor_name)} &lt;${escapeHtml(conv.visitor_email)}&gt;</p>
-    <p><strong>Topic:</strong> ${escapeHtml(conv.topic)}</p>
-    <hr style="border:none;border-top:1px solid #e2e8f0;margin:16px 0;">
-    <p style="line-height:1.6;white-space:pre-wrap;">${escapeHtml(messageText)}</p>
-    <a href="${adminUrl}" style="display:inline-block;margin-top:20px;background:#3b82f6;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">Reply in Admin Panel →</a>
-    <p style="margin-top:16px;font-size:12px;color:#94a3b8;">Replies from the admin panel appear instantly in the user's chat.</p>
-  </div>
-</div>`;
-
-        return { plainText, htmlContent, now, ref };
-    }
-
     async function notifyAdminByEmail(conv, messageText) {
-        if (!emailjsReady) return;
-
-        const { plainText, htmlContent, now, ref } = buildEmailContent(conv, messageText);
-
-        await emailjs.send(emailjsCfg.serviceId, emailjsCfg.templateId, {
-            to_email: emailjsCfg.toEmail,
-            to_name: 'Nexus Hub Team',
-            from_name: conv.visitor_name,
-            from_email: conv.visitor_email,
-            reply_to: conv.visitor_email,
-            subject: `[${ref}] ${conv.topic} — ${conv.visitor_name}`,
-            message: plainText,
-            html_message: htmlContent,
-            topic: conv.topic,
-            conversation_id: conv.id,
-            inquiry_date: now
-        });
+        if (!window.NexusMailer) throw new Error('Email module not loaded');
+        const fullConv = await getConversationForEmail(conv);
+        if (!fullConv) throw new Error('Conversation not found');
+        await NexusMailer.notifyAdmin(fullConv, messageText);
     }
 
     function subscribeRealtime(convId) {
         unsubscribeRealtime();
-        if (!supabase) {
-            state.pollTimer = setInterval(() => loadMessages(convId), 4000);
-            return;
-        }
+
+        // Always poll as backup (realtime may be off or delayed)
+        state.pollTimer = setInterval(() => loadMessages(convId), 3000);
+
+        if (!supabase) return;
 
         realtimeChannel = supabase
             .channel(`conv-${convId}`)
@@ -642,13 +623,14 @@ To reply by email and sync to chat, use subject:
                 filter: `conversation_id=eq.${convId}`
             }, (payload) => {
                 const m = payload.new;
-                if (m.sender === 'admin' || m.sender === 'bot') {
-                    const exists = state.messages.some(x => x.id === m.id);
-                    if (!exists) {
-                        state.messages.push(m);
-                        appendMessageEl(m.sender, m.content, m.created_at);
-                        if (m.sender === 'admin' && !widget.classList.contains('open')) {
-                            updateUnreadBadge();
+                const exists = state.messages.some(x => x.id === m.id);
+                if (!exists) {
+                    state.messages.push(m);
+                    appendMessageEl(m.sender, m.content, m.created_at);
+                    if (m.sender === 'admin') {
+                        if (!widget.classList.contains('open')) updateUnreadBadge();
+                        if (state.activeConversationId === convId) {
+                            loadConversationList();
                         }
                     }
                 }
@@ -669,14 +651,7 @@ To reply by email and sync to chat, use subject:
 
     // Init
     supabase = initSupabase();
-
-    const emailScript = document.createElement('script');
-    emailScript.src = 'https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js';
-    emailScript.onload = () => {
-        emailjs.init(emailjsCfg.publicKey);
-        emailjsReady = true;
-    };
-    document.body.appendChild(emailScript);
+    if (window.NexusMailer) NexusMailer.init().catch(e => console.warn('EmailJS preload:', e));
 
     launcher.addEventListener('click', toggleChat);
     document.getElementById('chat-close').addEventListener('click', closeChat);

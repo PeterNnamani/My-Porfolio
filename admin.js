@@ -1,7 +1,6 @@
 (function () {
     const cfg = window.NEXUS_CONFIG || {};
     const T = cfg.tables || { conversations: 'nexus_hub_conversations', messages: 'nexus_hub_messages' };
-    const T = cfg.tables || { conversations: 'nexus_hub_conversations', messages: 'nexus_hub_messages' };
     const loginEl = document.getElementById('admin-login');
     const appEl = document.getElementById('admin-app');
     const convListEl = document.getElementById('admin-conv-list');
@@ -12,7 +11,9 @@
 
     let supabase = null;
     let activeId = null;
+    let activeConv = null;
     let channel = null;
+    const statusEl = document.getElementById('admin-status');
 
     const SESSION_KEY = 'nexus_admin_session';
 
@@ -29,6 +30,16 @@
         return sessionStorage.getItem(SESSION_KEY) === '1';
     }
 
+    async function verifyMagicLink(convId, token) {
+        if (!convId || !token) return false;
+        const { data } = await supabase
+            .from(T.conversations)
+            .select('admin_token')
+            .eq('id', convId)
+            .single();
+        return data?.admin_token && data.admin_token === token;
+    }
+
     function showApp() {
         loginEl.classList.add('hidden');
         appEl.classList.remove('hidden');
@@ -37,6 +48,20 @@
         const params = new URLSearchParams(location.search);
         const convId = params.get('c');
         if (convId) openConversation(convId);
+    }
+
+    async function tryMagicLinkLogin() {
+        const params = new URLSearchParams(location.search);
+        const convId = params.get('c');
+        const token = params.get('t');
+        if (!convId || !token || !supabase) return false;
+        const valid = await verifyMagicLink(convId, token);
+        if (valid) {
+            sessionStorage.setItem(SESSION_KEY, '1');
+            showApp();
+            return true;
+        }
+        return false;
     }
 
     document.getElementById('admin-login-btn').addEventListener('click', () => {
@@ -95,6 +120,9 @@
         const { data: conv } = await supabase.from(T.conversations).select('*').eq('id', id).single();
         if (!conv) return;
 
+        activeConv = conv;
+        setStatus('');
+
         document.getElementById('admin-thread-title').textContent = conv.topic;
         document.getElementById('admin-thread-meta').textContent =
             `${conv.visitor_name} <${conv.visitor_email}> · ${conv.status}`;
@@ -124,15 +152,37 @@
         messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
+    function setStatus(msg, type) {
+        if (!statusEl) return;
+        statusEl.textContent = msg;
+        statusEl.className = 'admin-status' + (type ? ` ${type}` : '');
+    }
+
+    async function ensureAdminToken(conv) {
+        if (conv.admin_token) return conv;
+        const token = crypto.randomUUID().replace(/-/g, '').slice(0, 20);
+        const { error } = await supabase.from(T.conversations).update({ admin_token: token }).eq('id', conv.id);
+        if (!error) conv.admin_token = token;
+        return conv;
+    }
+
     async function sendReply() {
         const text = replyInput.value.trim();
         if (!text || !activeId) return;
 
-        await supabase.from(T.messages).insert({
+        setStatus('Sending...');
+
+        const { error } = await supabase.from(T.messages).insert({
+            id: crypto.randomUUID(),
             conversation_id: activeId,
             sender: 'admin',
             content: text
         });
+        if (error) {
+            setStatus('Chat save failed: ' + (error.message || 'Unknown error'), 'err');
+            return;
+        }
+
         await supabase.from(T.conversations).update({
             updated_at: new Date().toISOString(),
             status: 'open'
@@ -140,6 +190,25 @@
 
         replyInput.value = '';
         await loadMessages(activeId);
+
+        let emailOk = false;
+        if (activeConv && window.NexusMailer) {
+            try {
+                const conv = await ensureAdminToken({ ...activeConv });
+                activeConv = conv;
+                await NexusMailer.notifyVisitor(conv, text);
+                emailOk = true;
+            } catch (e) {
+                console.warn('Visitor email failed:', e);
+            }
+        }
+
+        setStatus(
+            emailOk
+                ? '✓ Reply sent to website chat and emailed to ' + (activeConv?.visitor_email || 'visitor')
+                : '✓ Reply sent to website chat' + (activeConv ? ' (visitor email not sent — check EmailJS)' : ''),
+            'ok'
+        );
     }
 
     async function closeConv() {
@@ -154,8 +223,13 @@
         openConversation(activeId);
     }
 
+    let pollTimer = null;
+
     function subscribe(convId) {
         if (channel) supabase.removeChannel(channel);
+        if (pollTimer) clearInterval(pollTimer);
+        pollTimer = setInterval(() => loadMessages(convId), 3000);
+
         channel = supabase
             .channel(`admin-${convId}`)
             .on('postgres_changes', {
@@ -184,5 +258,11 @@
     });
 
     supabase = initClient();
-    if (isLoggedIn() && supabase) showApp();
+    if (window.NexusMailer) NexusMailer.init().catch(e => console.warn('EmailJS preload:', e));
+
+    (async () => {
+        if (!supabase) return;
+        const magicOk = await tryMagicLinkLogin();
+        if (!magicOk && isLoggedIn()) showApp();
+    })();
 })();

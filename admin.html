@@ -24,6 +24,9 @@
         .admin-reply { padding: 1rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; }
         .admin-reply textarea { flex: 1; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; resize: vertical; min-height: 60px; font-family: inherit; background: var(--bg); color: var(--text); }
         .admin-empty { padding: 2rem; text-align: center; color: var(--text-muted); }
+        .admin-status { padding: 0 1rem 1rem; font-size: 0.85rem; min-height: 1.25rem; }
+        .admin-status.ok { color: #10b981; }
+        .admin-status.err { color: #ef4444; }
         @media (max-width: 768px) { .admin-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -65,6 +68,7 @@
                             <textarea id="admin-reply-input" placeholder="Type your reply..."></textarea>
                             <button type="button" class="btn btn-primary" id="admin-send-reply"><i class="ri-send-plane-fill"></i></button>
                         </div>
+                        <p id="admin-status" class="admin-status" aria-live="polite"></p>
                     </div>
                 </div>
             </div>
@@ -73,6 +77,7 @@
 
     <script src="config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="mailer.js"></script>
     <script src="admin.js"></script>
 </body>
 </html>

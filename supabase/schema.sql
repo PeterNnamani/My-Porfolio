@@ -8,6 +8,7 @@ create table if not exists nexus_hub_conversations (
   visitor_email text not null default '',
   topic text not null default 'General Inquiry',
   status text not null default 'open' check (status in ('open', 'closed')),
+  admin_token text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
