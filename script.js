@@ -287,6 +287,54 @@ const projects = {
         tags: ['React Native', 'E-Commerce', 'Payments', 'Mobile'],
         link: null,
         linkText: null
+    },
+    creatwealth: {
+        title: 'Create Wealth',
+        status: 'Live',
+        statusClass: 'status-live',
+        description: 'Create Wealth is a modern online presence focused on growth, brand trust, and a polished experience for visitors exploring the business digitally.',
+        features: [
+            'Clean marketing-first landing experience',
+            'Mobile-friendly responsive layout',
+            'Strong visual storytelling',
+            'Fast and accessible content presentation',
+            'Easy navigation for visitors'
+        ],
+        tags: ['Web', 'Branding', 'Growth', 'Landing Page'],
+        link: 'https://www.creatwealth.live/',
+        linkText: 'Visit Create Wealth'
+    },
+    anchorledger: {
+        title: 'AnchorLedger',
+        status: 'Release',
+        statusClass: 'status-live',
+        description: 'AnchorLedger is a software release project designed to showcase a ledger-focused product with clear documentation, downloadable assets, and a professional presentation.',
+        features: [
+            'Release page with product details',
+            'Structured documentation and assets',
+            'Professional project presentation',
+            'Easy access to downloads',
+            'Clear product overview for users'
+        ],
+        tags: ['Open Source', 'Ledger', 'Release', 'Software'],
+        link: 'https://github.com/PeterNnamani/AnchorLedger/releases/tag/Anchorledgerv1.0.1',
+        linkText: 'View Release'
+    },
+    cleanwave: {
+        title: 'Clean Wave',
+        status: 'Live',
+        statusClass: 'status-live',
+        description: 'Clean Wave is a polished web product with a modern layout, concise messaging, and a strong visual identity tailored for online audiences.',
+        features: [
+            'Modern landing page experience',
+            'Responsive and elegant visuals',
+            'User-focused product presentation',
+            'Fast loading and simple navigation',
+            'Clear brand positioning'
+        ],
+        tags: ['Vercel', 'UI', 'Landing Page', 'Web'],
+        link: 'https://clean-wave-project.vercel.app/',
+        linkText: 'Visit Clean Wave'
     }
 };
 

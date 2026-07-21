@@ -814,7 +814,7 @@ img {
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1.25rem;
 }
 
@@ -858,6 +858,41 @@ img {
 
 .product-visual-shop {
     background: linear-gradient(135deg, #c2410c, #f97316, #fb923c);
+}
+
+.product-visual-creatwealth {
+    background: linear-gradient(135deg, #0f172a, #334155, #6366f1);
+}
+
+.product-visual-anchorledger {
+    background: linear-gradient(135deg, #1d4ed8, #3b82f6, #8b5cf6);
+}
+
+.product-visual-cleanwave {
+    background: linear-gradient(135deg, #14532d, #16a34a, #4ade80);
+}
+
+.product-visual.has-preview {
+    padding: 0;
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+.product-preview-shell {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+}
+
+.product-preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border: 0;
+    background: #ffffff;
 }
 
 .product-mockup {
